@@ -1,5 +1,6 @@
 package haw.is.sudokury;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Node<T> {
