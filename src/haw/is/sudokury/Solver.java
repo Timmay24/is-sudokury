@@ -1,6 +1,14 @@
 package haw.is.sudokury;
 
-public interface Solver {
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
-	public int solve(int[][] board);
+public abstract class Solver {
+
+	protected Map< Field, Set<Field>> constList = new HashMap<>();
+
+	
+	public abstract int solve(int[][] board);
 }
