@@ -73,7 +73,8 @@ fabric.properties
 # Editor-based Rest Client
 .idea/httpRequests
 
-########## Eclipse
+# Eclipse Core      
+.project
 .metadata
 bin/
 tmp/
@@ -85,6 +86,9 @@ local.properties
 .settings/
 .loadpath
 .recommenders
+
+# JDT-specific (Eclipse Java Development Tools)     
+.classpath
 
 # External tool builders
 .externalToolBuilders/
