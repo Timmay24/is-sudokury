@@ -44,5 +44,10 @@ public class Field {
 			return false;
 		return true;
 	}
+
+	@Override
+	public String toString() {
+		return "Field [x=" + x + ", y=" + y + "]";
+	}
 	
 }
