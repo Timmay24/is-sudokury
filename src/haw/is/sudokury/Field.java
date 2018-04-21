@@ -1,7 +1,14 @@
 package haw.is.sudokury;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
 public class Field {
 
+	//map die xCord auf yCord auf das Feld [xCord, yCord] mappt.
+	private static Map<Integer,Map<Integer, Field>> fields = new HashMap<>();
 	private final int x;
 	private final int y;
 	
@@ -14,12 +21,45 @@ public class Field {
 	}
 	
 	
-	public Field(int xCord, int yCord) {
+	private Field(int xCord, int yCord) {
 		super();
 		this.x = xCord;
 		this.y = yCord;
 	}
 
+	/**
+	 * singleton Pattern auf die Klasse Field. Bestehende Felder werden gehalten.
+	 *  Eine Position x y existiert nur einmal
+	 * @param x - x-koordinate
+	 * @param y	- y-koordinate
+	 * @return	eine Referenz auf ein Feld mit x-und y-koordinate
+	 */
+	public static Field getField(int x, int y){
+		//wenn x schon gemappt wurde
+		if(fields.containsKey(x)){
+			//dazu ein y existiert
+			if(fields.get(x).containsKey(y)){
+				//gebe das bereits existierende Feld aus
+				return fields.get(x).get(y);
+			}
+			//wenn x bereits gemappt wurde, aber nicht y
+			else{
+				//erstelle das Feld, lege es in der map ab und gebe es raus
+				Field field = new Field(x, y);
+				fields.get(x).put(y, field);
+				return field;
+			}
+		}
+		//wenn x und y noch nicht gemappt wurden
+		else{
+			//erstelle das Feld, lege das Mapping an und gebe es aus.
+			Map<Integer, Field> pos = new HashMap<>();
+			Field field = new Field(x, y);
+			pos.put(y, field);
+			fields.put(x, pos);
+			return field;
+		}
+	}
 	@Override
 	public int hashCode() {
 		final int prime = 31;

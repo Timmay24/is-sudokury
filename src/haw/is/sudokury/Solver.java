@@ -23,7 +23,7 @@ public abstract class Solver {
 		set = new HashSet<>();
 		for (int x = 0; x < 3; ++x) {
 			for (int y = 0; y < 3; ++y) {
-				set.add(new Field(x, y));
+				set.add(Field.getField(x, y));
 			}
 		}
 		blockMap.put(1, set);
@@ -32,7 +32,7 @@ public abstract class Solver {
 		set = new HashSet<>();
 		for (int x = 3; x < 6; ++x) {
 			for (int y = 0; y < 3; ++y) {
-				set.add(new Field(x, y));
+				set.add(Field.getField(x, y));
 			}
 		}
 		blockMap.put(2, set);
@@ -41,7 +41,7 @@ public abstract class Solver {
 		set = new HashSet<>();
 		for (int x = 6; x < 9; ++x) {
 			for (int y = 0; y < 3; ++y) {
-				set.add(new Field(x, y));
+				set.add(Field.getField(x, y));
 			}
 		}
 		blockMap.put(3, set);
@@ -50,7 +50,7 @@ public abstract class Solver {
 		set = new HashSet<>();
 		for (int x = 0; x < 3; ++x) {
 			for (int y = 3; y < 6; ++y) {
-				set.add(new Field(x, y));
+				set.add(Field.getField(x, y));
 			}
 		}
 		blockMap.put(4, set);
@@ -59,7 +59,7 @@ public abstract class Solver {
 		set = new HashSet<>();
 		for (int x = 3; x < 6; ++x) {
 			for (int y = 3; y < 6; ++y) {
-				set.add(new Field(x, y));
+				set.add(Field.getField(x, y));
 			}
 		}
 		blockMap.put(5, set);
@@ -68,7 +68,7 @@ public abstract class Solver {
 		set = new HashSet<>();
 		for (int x = 3; x < 6; ++x) {
 			for (int y = 6; y < 9; ++y) {
-				set.add(new Field(x, y));
+				set.add(Field.getField(x, y));
 			}
 		}
 		blockMap.put(6, set);
@@ -77,7 +77,7 @@ public abstract class Solver {
 		set = new HashSet<>();
 		for (int x = 6; x < 9; ++x) {
 			for (int y = 0; y < 3; ++y) {
-				set.add(new Field(x, y));
+				set.add(Field.getField(x, y));
 			}
 		}
 		blockMap.put(7, set);
@@ -86,7 +86,7 @@ public abstract class Solver {
 		set = new HashSet<>();
 		for (int x = 6; x < 9; ++x) {
 			for (int y = 3; y < 6; ++y) {
-				set.add(new Field(x, y));
+				set.add(Field.getField(x, y));
 			}
 		}
 		blockMap.put(8, set);
@@ -96,7 +96,7 @@ public abstract class Solver {
 		for (int x = 6; x < 9; ++x) {
 			for (int y = 6; y < 9; ++y) {
 
-				set.add(new Field(x, y));
+				set.add(Field.getField(x, y));
 			}
 		}
 		blockMap.put(9, set);
@@ -108,24 +108,24 @@ public abstract class Solver {
 				for (int x2 = 0; x2 < 9; ++x2) {
 					if (x != x2) {
 						// alle in einer Zeile zusammengefasst
-						set.add(new Field(x2, y));
+						set.add(Field.getField(x2, y));
 					}
 				}
 				for (int y2 = 0; y2 < 9; ++y2) {
 					if (y != y2) {
 						// alle in einer Spalte zusammengefasst
-						set.add(new Field(x, y2));
+						set.add(Field.getField(x, y2));
 					}
 				}
 
 				// wer ist im selben Block
 				for (Entry<Integer, Set<Field>> keyValue : blockMap.entrySet()) {
-					if (keyValue.getValue().contains(new Field(x, y))) {
+					if (keyValue.getValue().contains(Field.getField(x, y))) {
 						set.addAll(keyValue.getValue());
-						set.remove(new Field(x, y));
+						set.remove(Field.getField(x, y));
 					}
 				}
-				constList.put(new Field(x, y), set);
+				constList.put(Field.getField(x, y), set);
 			}
 		}
 
