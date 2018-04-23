@@ -2,7 +2,9 @@ package haw.is.sudokury.algorithms;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
+import haw.is.sudokury.constraints.ConstraintVariable;
 import haw.is.sudokury.models.Field;
 
 public class AC3Solver extends Solver {
@@ -63,11 +65,10 @@ public class AC3Solver extends Solver {
 	 * Wert von Vj gibt 
 	 * 
 	 */
-	public boolean revise(Field i, Field j) {
+	public boolean revise(ConstraintVariable<Field, Integer> vi, ConstraintVariable<Field, Integer> vj) {
 		boolean delete = false;
-		
-		
-		
+		Set<Integer> di = vi.getDomain();
+		Set<Integer> dj = vj.getDomain();	
 		
 		/*
 		 * procedure REVISE(Vi,Vj)

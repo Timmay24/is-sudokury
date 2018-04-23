@@ -1,17 +1,30 @@
 package haw.is.sudokury.constraints;
 
-public class AllDiffConstraint implements Constraint {
+import haw.is.sudokury.constraints.interfaces.Constraint;
 
-    private final ConstraintVariable f;
-    private final ConstraintVariable g;
+/*
+ * Generic Type E: Type der durch Constraint-Variablen-Klassen genutzt werden 
+ */
 
-	public AllDiffConstraint (ConstraintVariable f, ConstraintVariable g) {
+public class AllDiffConstraint<E> implements Constraint {
+
+    private final ConstraintVariable<E, Integer> f;
+    private final ConstraintVariable<E, Integer> g;
+
+	public AllDiffConstraint (ConstraintVariable<E, Integer> f, ConstraintVariable<E, Integer> g) {
         this.f = f;
         this.g = g;
     }
 	
-	
-    @Override
+    public final ConstraintVariable<E, Integer> getF() {
+		return f;
+	}
+
+	public final ConstraintVariable<E, Integer> getG() {
+		return g;
+	}
+
+	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
@@ -28,7 +41,7 @@ public class AllDiffConstraint implements Constraint {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		AllDiffConstraint other = (AllDiffConstraint) obj;
+		AllDiffConstraint<E> other = (AllDiffConstraint<E>) obj;
 		if (f == null) {
 			if (other.f != null)
 				return false;
@@ -41,6 +54,4 @@ public class AllDiffConstraint implements Constraint {
 			return false;
 		return true;
 	}
-
-
 }
