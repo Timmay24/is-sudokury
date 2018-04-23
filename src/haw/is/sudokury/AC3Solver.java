@@ -4,13 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import constraint.Constraint;
+import haw.is.sudokury.constraints.Constraint;
 
 public class AC3Solver extends Solver {
 	
-	public AC3Solver(Set<Constraint> constraints) {
-		super(constraints);
-		// TODO Auto-generated constructor stub
+	public AC3Solver() {
+		super();
 	}
 
 	private int[][] board;
@@ -91,7 +90,7 @@ public class AC3Solver extends Solver {
 		//	(d.h. 
 		//  dann lösche X aus Feld i
 		
-		return false;
+		return delete;
 	}
 	
 	

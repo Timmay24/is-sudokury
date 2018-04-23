@@ -1,4 +1,4 @@
-package constraint;
+package haw.is.sudokury.constraints;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -20,7 +20,7 @@ public class ConstraintBuilder {
 				
 				
 				//alle in der Zeile
-				for(int x2 = 0; x2 < 0; ++x2) {
+				for(int x2 = 0; x2 < 9; ++x2) {
 					
 					if(x != x2) {
 						Field field2 = Field.getField(x2, y);
@@ -30,7 +30,7 @@ public class ConstraintBuilder {
 				}
 		
 				//alle in der Spalte
-				for(int y2 = 0; y2 < 0; ++y2) {
+				for(int y2 = 0; y2 < 9; ++y2) {
 					
 					if(y != y2) {
 						Field field2 = Field.getField(x, y2);
@@ -40,8 +40,8 @@ public class ConstraintBuilder {
 				}
 				
 				//alle im Block
-				for(int x2 = 0; x2 < 0; ++x2) {
-					for(int y2 = 0; y2 < 0; ++y2) {
+				for(int x2 = 0; x2 < 9; ++x2) {
+					for(int y2 = 0; y2 < 9; ++y2) {
 						
 						if(y != y2 && x != x2 && x/3==x2/3 && y/3==y2/3) {
 							Field field2 = Field.getField(x2, y2);

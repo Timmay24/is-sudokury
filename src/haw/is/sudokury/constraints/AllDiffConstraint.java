@@ -1,4 +1,4 @@
-package constraint;
+package haw.is.sudokury.constraints;
 
 public class AllDiffConstraint implements Constraint {
 

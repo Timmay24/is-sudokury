@@ -7,8 +7,8 @@ import java.util.Set;
 import org.junit.Before;
 import org.junit.Test;
 
-import constraint.Constraint;
-import constraint.ConstraintBuilder;
+import haw.is.sudokury.constraints.Constraint;
+import haw.is.sudokury.constraints.ConstraintBuilder;
 
 public class ConstraintBuilderTest {
 
@@ -20,6 +20,7 @@ public class ConstraintBuilderTest {
 	public void test() {
 		Set<Constraint> set = ConstraintBuilder.buildConstriants();
 		assertNotNull(set);
+		assertEquals(set.size(), 81*20);
 	}
 
 }

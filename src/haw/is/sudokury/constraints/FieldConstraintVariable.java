@@ -1,4 +1,4 @@
-package constraint;
+package haw.is.sudokury.constraints;
 
 import java.util.Set;
 

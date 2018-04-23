@@ -10,7 +10,6 @@ import haw.is.sudokury.Field;
 import haw.is.sudokury.SudokuGenerator;
 
 public class AC3SolverTest {
-/*
 	private int[][] board;
 	private AC3Solver solver;
 	private Field f1_1, f1_3, f5_4;
@@ -38,5 +37,4 @@ public class AC3SolverTest {
 		assertTrue(solver.isFieldEmpty(Field.getField(0, 1)));
 		assertFalse(solver.isFieldEmpty(Field.getField(0, 0)));
 	}
-*/
 }
