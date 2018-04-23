@@ -3,15 +3,14 @@ package haw.is.sudokury.constraints;
 import java.util.HashSet;
 import java.util.Set;
 
-import haw.is.sudokury.Field;
+import haw.is.sudokury.constraints.interfaces.Constraint;
+import haw.is.sudokury.models.Field;
 
 public class ConstraintBuilder {
 
-	private ConstraintBuilder() {
-		
-	}
+	private ConstraintBuilder() {}
 	
-	public static Set<Constraint> buildConstriants(){
+	public static Set<Constraint> buildConstraints(){
 		Set<Constraint> result = new HashSet<>();
 		for(int x = 0; x < 9; ++x) {
 			for(int y = 0; y < 9; ++y) {
@@ -50,8 +49,6 @@ public class ConstraintBuilder {
 						}
 					}
 				}
-				
-				
 			}
 		}
 		return result;
