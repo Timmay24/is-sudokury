@@ -2,12 +2,14 @@ package haw.is.sudokury;
 
 import java.util.*;
 
+import haw.is.sudokury.interfaces.BoardCreator;
+
 /**
 *The SudokuGenerator class creates a random standard (9x9)
 *Sudoku board through the use of backtracking techniques.
 *https://github.com/SomeKittens/Sudoku-Project/blob/master/SudokuGenerator.java
 */
-public class SudokuGenerator implements FieldCreator
+public class SudokuGenerator implements BoardCreator
 {
 	private static final int BOARD_WIDTH = 9;
 	private static final int BOARD_HEIGHT = 9;

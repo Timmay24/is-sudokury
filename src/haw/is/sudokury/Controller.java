@@ -3,15 +3,20 @@ package haw.is.sudokury;
 import java.util.HashSet;
 import java.util.Set;
 
+import haw.is.sudokury.algorithms.Solver;
+import haw.is.sudokury.interfaces.BoardCreator;
+import haw.is.sudokury.models.Field;
+import haw.is.sudokury.models.Node;
+
 public class Controller {
-	private FieldCreator boardCreator;
+	private BoardCreator boardCreator;
 	private final Node<int[][]> root;
 	private Solver solver;
 	Set<int[][]> closedList = new HashSet<>();
 
-	public Controller(Solver solver, FieldCreator fieldCreator) {
+	public Controller(Solver solver, BoardCreator boardCreator) {
 		this.solver = solver;
-		boardCreator = fieldCreator;
+		this.boardCreator = boardCreator;
 		root = new Node<>(boardCreator.nextBoard());
 	}
 
