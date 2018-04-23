@@ -1,4 +1,4 @@
-package haw.is.sudokury;
+package haw.is.sudokury.enums;
 
 public enum Strategies {
 	

@@ -1,8 +1,8 @@
-package haw.is.sudokury;
+package haw.is.sudokury.algorithms;
 
 import java.util.Set;
 
-import haw.is.sudokury.constraints.Constraint;
+import haw.is.sudokury.constraints.interfaces.Constraint;
 import haw.is.sudokury.constraints.ConstraintBuilder;
 
 public abstract class Solver {
@@ -10,7 +10,7 @@ public abstract class Solver {
 	protected final Set<Constraint> constraints;
 
 	public Solver() {
-		this.constraints = ConstraintBuilder.buildConstriants();  
+		this.constraints = ConstraintBuilder.buildConstraints();  
 	}
 
 	public abstract int solve(int[][] board);

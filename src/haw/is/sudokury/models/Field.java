@@ -1,9 +1,7 @@
-package haw.is.sudokury;
+package haw.is.sudokury.models;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 public class Field {
 
@@ -21,10 +19,10 @@ public class Field {
 	}
 	
 	
-	private Field(int xCord, int yCord) {
+	private Field(int x, int y) {
 		super();
-		this.x = xCord;
-		this.y = yCord;
+		this.x = x;
+		this.y = y;
 	}
 
 	/**

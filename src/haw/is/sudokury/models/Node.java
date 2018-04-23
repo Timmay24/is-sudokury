@@ -1,4 +1,4 @@
-package haw.is.sudokury;
+package haw.is.sudokury.models;
 
 import java.util.ArrayList;
 import java.util.List;

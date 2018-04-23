@@ -1,10 +1,9 @@
-package haw.is.sudokury;
+package haw.is.sudokury.algorithms;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
-import haw.is.sudokury.constraints.Constraint;
+import haw.is.sudokury.models.Field;
 
 public class AC3Solver extends Solver {
 	
