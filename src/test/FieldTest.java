@@ -1,6 +1,9 @@
 package test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -22,7 +25,7 @@ public class FieldTest {
 		assertEquals(1,field.getY());
 	}
 	
-	//teste, ob wirklich die selbe Instanz zurück gegeben wird
+	//teste, ob wirklich die selbe Instanz zurï¿½ck gegeben wird
 	@Test
 	public void testGetExistingField() {
 		Field field = Field.getField(1, 1);

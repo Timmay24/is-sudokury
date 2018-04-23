@@ -15,10 +15,10 @@ public class Controller {
 		root = new Node<>(boardCreator.nextBoard());
 	}
 
-	public Node removeField(Node node, Field field) {
-		int[][] board = deepCloneBoard((int[][]) node.getBoard());
+	public Node<int[][]> removeField(Node<int[][]> node, Field field) {
+		int[][] board = deepCloneBoard(node.getBoard());
 		board[field.getX()][field.getY()] = 0;
-		if(closedList.contains(board)){
+		if (closedList.contains(board)) {
 			return null;
 		}
 		int difficulty = solver.solve(board);
@@ -26,9 +26,8 @@ public class Controller {
 			closedList.add(board);
 			return null;
 		}
-		Node childNode = new Node<int[][]>(board);
+		Node<int[][]> childNode = node.add(board);
 		childNode.setDifficulty(difficulty);
-		node.add(childNode);
 		return childNode;
 	}
 
@@ -41,13 +40,13 @@ public class Controller {
 	}
 	
 	public void printBoard(int[][] board){
-		for(int y = 0; y < 9; ++y){
-			for(int x = 0; x < 9; ++x){
+		for (int y = 0; y < 9; ++y) {
+			for (int x = 0; x < 9; ++x) {
 				System.out.print(board[x][y]);
 				if(x==8){
 					System.out.print("\n");
 				}
-				else{
+				else {
 					System.out.print(" ");
 				}
 			}
