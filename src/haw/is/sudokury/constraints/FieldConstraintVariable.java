@@ -2,7 +2,7 @@ package haw.is.sudokury.constraints;
 
 import java.util.Set;
 
-import haw.is.sudokury.Field;
+import haw.is.sudokury.models.Field;
 
 public class FieldConstraintVariable extends ConstraintVariable<Field, Integer> {
 
