@@ -1,4 +1,4 @@
-package test;
+package haw.is.sudokury;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
@@ -8,7 +8,7 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
-import haw.is.sudokury.Field;
+import haw.is.sudokury.models.Field;
 
 public class FieldTest {
 

@@ -1,13 +1,13 @@
-package test;
+package haw.is.sudokury;
 
 import static org.junit.Assert.*;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import haw.is.sudokury.AC3Solver;
-import haw.is.sudokury.Field;
 import haw.is.sudokury.SudokuGenerator;
+import haw.is.sudokury.algorithms.AC3Solver;
+import haw.is.sudokury.models.Field;
 
 public class AC3SolverTest {
 	private int[][] board;
