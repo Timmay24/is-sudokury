@@ -1,10 +1,9 @@
-package haw.is.sudokury;
+package haw.is.sudokury.algorithms;
 
 import static org.junit.Assert.*;
 
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.junit.Test;
@@ -41,19 +40,6 @@ public class AC3SolverTest {
 		assertFalse(solver.revise(vi, vj));
 		assertEquals(vi.getDomain(), new HashSet<>(Arrays.asList(1,2,5,6)));
 		assertEquals(vj.getDomain(), new HashSet<>(Arrays.asList(3,7)));
-	}
-	
-	@Test
-	public void testSolve() {
-		int[][] board = new SudokuGenerator().nextBoard();
-		List<Field> emptyFields = Arrays.asList(Field.getField(1, 1), Field.getField(1, 5));
-		System.out.println(board[1][1]);
-		System.out.println(board[1][5]);
-		board[1][1] = 0;
-		board[1][5] = 0;
-		
-		AC3Solver solver = new AC3Solver();
-		assertTrue(solver.solve(board) > 0);
 	}
 
 }

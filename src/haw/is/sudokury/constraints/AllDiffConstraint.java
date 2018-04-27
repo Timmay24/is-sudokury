@@ -6,7 +6,7 @@ import haw.is.sudokury.constraints.interfaces.Constraint;
  * Generic Type E: Type der durch Constraint-Variablen-Klassen genutzt werden 
  */
 
-public class AllDiffConstraint<E> implements Constraint {
+public class AllDiffConstraint<E> implements Constraint<E> {
 
     private final ConstraintVariable<E, Integer> f;
     private final ConstraintVariable<E, Integer> g;
@@ -22,6 +22,13 @@ public class AllDiffConstraint<E> implements Constraint {
 
 	public final ConstraintVariable<E, Integer> getG() {
 		return g;
+	}
+	
+	public boolean isConsistent() {
+		for (Integer fi : f.getDomain()) {
+			if (g.getDomain().contains(fi)) return false;
+		}
+		return true;
 	}
 
 	@Override

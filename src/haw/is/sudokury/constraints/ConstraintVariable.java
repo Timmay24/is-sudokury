@@ -1,12 +1,12 @@
 package haw.is.sudokury.constraints;
 
-import java.util.Set;
+import java.util.HashSet;
 
 public abstract class ConstraintVariable<T, V> {
 	private final T variable;
-	private final Set<V> domain;
+	private final HashSet<V> domain;
 	
-	protected ConstraintVariable(T variable, Set<V> domain) {
+	protected ConstraintVariable(T variable, HashSet<V> domain) {
 		this.variable = variable;
 		this.domain = domain;
 	}
@@ -15,7 +15,7 @@ public abstract class ConstraintVariable<T, V> {
 		return variable;
 	}
 
-	public final Set<V> getDomain() {
+	public final HashSet<V> getDomain() {
 		return domain;
 	}
 
@@ -43,6 +43,4 @@ public abstract class ConstraintVariable<T, V> {
 			return false;
 		return true;
 	}
-	
-	
 }
