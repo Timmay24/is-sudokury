@@ -1,5 +1,7 @@
 package haw.is.sudokury.constraints;
 
+import java.util.Set;
+
 import haw.is.sudokury.constraints.interfaces.Constraint;
 
 /*
@@ -16,17 +18,27 @@ public class AllDiffConstraint<E> implements Constraint<E> {
         this.g = g;
     }
 	
-    public final ConstraintVariable<E, Integer> getF() {
+    public final ConstraintVariable<E, Integer> getSource() {
 		return f;
 	}
 
-	public final ConstraintVariable<E, Integer> getG() {
+	public final ConstraintVariable<E, Integer> getTarget() {
 		return g;
 	}
 	
-	public boolean isConsistent() {
+	public boolean isConsistent() {		
 		for (Integer fi : f.getDomain()) {
-			if (g.getDomain().contains(fi)) return false;
+			boolean satisfied = false;
+			
+			for (Integer gi : g.getDomain()) {
+				if (fi != gi) {
+					satisfied = true;
+					break;
+				}
+			}
+			if (!satisfied) {
+				return false;
+			}
 		}
 		return true;
 	}
@@ -60,5 +72,12 @@ public class AllDiffConstraint<E> implements Constraint<E> {
 		} else if (!g.equals(other.g))
 			return false;
 		return true;
+	}
+
+	@Override
+	public Constraint cloneConst() {
+		ConstraintVariable varSource = f.cloneVar();
+		ConstraintVariable varTarget = g.cloneVar();
+		return new AllDiffConstraint(varSource,varTarget);
 	}
 }

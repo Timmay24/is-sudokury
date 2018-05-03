@@ -19,12 +19,20 @@ public class AllDiffConstraintTest {
 		
 		AllDiffConstraint<Field> adc = new AllDiffConstraint<>(f,g);
 		
-		assertFalse(adc.isConsistent());
-		f.getDomain().removeAll(Set.of(5,6,7,8,9)); 	// f {1,2,3,4}
-		g.getDomain().removeAll(Set.of(1,2,3));			// g {4,5,6,7,8,9}
-		assertFalse(adc.isConsistent());
-		f.getDomain().remove(4);						// f {1,2,3}
+		f.getDomain().retainAll(Set.of(1,2,3));
+		g.getDomain().retainAll(Set.of(2,3,4));
 		assertTrue(adc.isConsistent());
 	}
 
+	@Test
+	public void testIsNotConsistent() {
+		FieldConstraintVariable f = new FieldConstraintVariable(Field.getField(1, 2));
+		FieldConstraintVariable g = new FieldConstraintVariable(Field.getField(1, 3));
+		
+		AllDiffConstraint<Field> adc = new AllDiffConstraint<>(f,g);
+		
+		f.getDomain().retainAll(Set.of(1,2,3));
+		g.getDomain().retainAll(Set.of(2));
+		assertFalse(adc.isConsistent());
+	}
 }
