@@ -12,10 +12,6 @@ public class FieldConstraintVariable extends ConstraintVariable<Field, Integer> 
 		super(field, new HashSet<>(Arrays.asList(1,2,3,4,5,6,7,8,9)));
 	}
 	
-	public FieldConstraintVariable(Field field, Integer... domain) {
-		super(field, new HashSet<>(Set.of(domain)));
-	}
-	
 	public FieldConstraintVariable(Field field, HashSet<Integer> domain) {
 		super(field, domain);
 	}
