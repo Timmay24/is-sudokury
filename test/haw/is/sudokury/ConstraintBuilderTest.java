@@ -1,14 +1,15 @@
 package haw.is.sudokury;
 
-import static org.junit.Assert.*;
-
-import java.util.Set;
-
+import haw.is.sudokury.constraints.ConstraintBuilder;
+import haw.is.sudokury.constraints.interfaces.Constraint;
+import haw.is.sudokury.models.v2.Board;
 import org.junit.Before;
 import org.junit.Test;
 
-import haw.is.sudokury.constraints.interfaces.Constraint;
-import haw.is.sudokury.constraints.ConstraintBuilder;
+import java.util.Set;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class ConstraintBuilderTest {
 
@@ -18,7 +19,7 @@ public class ConstraintBuilderTest {
 
 	@Test
 	public void test() {
-		Set<Constraint> set = ConstraintBuilder.buildConstraints();
+		Set<Constraint> set = ConstraintBuilder.buildConstraints(new Board());
 		assertNotNull(set);
 		assertEquals(set.size(), 81*20);
 	}

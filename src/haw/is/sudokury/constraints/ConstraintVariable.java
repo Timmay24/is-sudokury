@@ -1,61 +1,61 @@
 package haw.is.sudokury.constraints;
 
 import java.util.HashSet;
+import java.util.Objects;
 
-public abstract class ConstraintVariable<T, V> implements Comparable<V>{
+public class ConstraintVariable<T, V> implements Comparable<V>{
 	private final T variable;
 	private final HashSet<V> domain;
 	
-	protected ConstraintVariable(T variable, HashSet<V> domain) {
+	public ConstraintVariable(T variable, HashSet<V> domain) {
 		this.variable = variable;
 		this.domain = domain;
 	}
 
-	public final T getVariable() {
+	public ConstraintVariable(ConstraintVariable<T, V> constraintVariable) {
+	    this(constraintVariable.getVariable(), new HashSet<>(constraintVariable.getDomain()));
+    }
+
+	public T getVariable() {
 		return variable;
 	}
 
-	public final HashSet<V> getDomain() {
+	public HashSet<V> getDomain() {
 		return domain;
 	}
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((variable == null) ? 0 : variable.hashCode());
-		return result;
-	}
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ConstraintVariable<?, ?> that = (ConstraintVariable<?, ?>) o;
+        return Objects.equals(variable, that.variable) &&
+                Objects.equals(domain, that.domain);
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		ConstraintVariable other = (ConstraintVariable) obj;
-		if (variable == null) {
-			if (other.variable != null)
-				return false;
-		} else if (!variable.equals(other.variable))
-			return false;
-		return true;
-	}
-	
-	@Override
+    @Override
+    public int hashCode() {
+        return Objects.hash(variable, domain);
+    }
+
+    @Override
 	public int compareTo(Object o) {
 		ConstraintVariable<T, V> var = (ConstraintVariable<T, V>) o;
-        if (this.domain.size() == var.domain.size()) {
+        if (this.getDomain().size() == var.getDomain().size()) {
         	return 0;
-        } else if (this.domain.size() > var.domain.size()) {
+        } else if (this.getDomain().size() > var.getDomain().size()) {
         	return 1;
         } else {
         	return -1;
         }
     }
 
-	public abstract ConstraintVariable cloneVar();
-	
+    public ConstraintVariable<T, V> copy() {
+	    return new ConstraintVariable<>(this);
+    }
+
+    @Deprecated
+	public ConstraintVariable cloneVar() {
+		return new ConstraintVariable(this.getVariable(), new HashSet<>(this.getDomain()));
+	}
 }

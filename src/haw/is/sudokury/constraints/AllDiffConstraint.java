@@ -1,7 +1,5 @@
 package haw.is.sudokury.constraints;
 
-import java.util.Set;
-
 import haw.is.sudokury.constraints.interfaces.Constraint;
 
 /*
@@ -75,9 +73,7 @@ public class AllDiffConstraint<E> implements Constraint<E> {
 	}
 
 	@Override
-	public Constraint cloneConst() {
-		ConstraintVariable varSource = f.cloneVar();
-		ConstraintVariable varTarget = g.cloneVar();
-		return new AllDiffConstraint(varSource,varTarget);
+	public Constraint copy() {
+		return new AllDiffConstraint(f.copy(), g.copy());
 	}
 }

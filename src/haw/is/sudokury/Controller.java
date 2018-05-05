@@ -1,25 +1,27 @@
 package haw.is.sudokury;
 
+import haw.is.sudokury.algorithms.AC3Solver;
+import haw.is.sudokury.interfaces.BoardCreator;
+import haw.is.sudokury.models.Node;
+import haw.is.sudokury.models.v2.Board;
+
 import java.util.HashSet;
 import java.util.Set;
 
-import haw.is.sudokury.algorithms.Solver;
-import haw.is.sudokury.interfaces.BoardCreator;
-import haw.is.sudokury.models.Field;
-import haw.is.sudokury.models.Node;
-
 public class Controller {
 	private BoardCreator boardCreator;
-	private final Node<int[][]> root;
-	private Solver solver;
+	private final Node<Board> root;
+	private AC3Solver solver;
 	Set<int[][]> closedList = new HashSet<>();
 
-	public Controller(Solver solver, BoardCreator boardCreator) {
+	public Controller(AC3Solver solver, BoardCreator boardCreator) {
 		this.solver = solver;
 		this.boardCreator = boardCreator;
-		root = new Node<>(boardCreator.nextBoard());
+		Board board = new Board(boardCreator.nextBoard());
+		root = new Node<>(board);
 	}
 
+	/*
 	public Node<int[][]> removeField(Node<int[][]> node, Field field) {
 		int[][] board = deepCloneBoard(node.getBoard());
 		board[field.getX()][field.getY()] = 0;
@@ -35,7 +37,9 @@ public class Controller {
 		childNode.setDifficulty(difficulty);
 		return childNode;
 	}
+	*/
 
+	/*
 	private int[][] deepCloneBoard(int[][] oldArray) {
 		int[][] clonedArray = new int[oldArray.length][oldArray.length];
 		for (int x = 0; x < oldArray.length; ++x) {
@@ -43,6 +47,7 @@ public class Controller {
 		}
 		return clonedArray;
 	}
+	*/
 	
 	public void printBoard(int[][] board){
 		for (int y = 0; y < 9; ++y) {
@@ -58,7 +63,7 @@ public class Controller {
 		}
 	}
 
-	public Node<int[][]> getRoot() {
+	public Node<Board> getRoot() {
 		return root;
 	}
 }

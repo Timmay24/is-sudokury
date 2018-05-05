@@ -1,32 +1,123 @@
 package haw.is.sudokury.algorithms;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
-
+import haw.is.sudokury.constraints.ConstraintBuilder;
 import haw.is.sudokury.constraints.ConstraintVariable;
 import haw.is.sudokury.constraints.FieldConstraintVariable;
 import haw.is.sudokury.constraints.interfaces.Constraint;
-import haw.is.sudokury.models.Field;
+import haw.is.sudokury.models.v2.Board;
+import haw.is.sudokury.models.v2.Field;
 
-public class AC3Solver extends Solver {
-	
-	public AC3Solver() {
-		super();
-	}
+import java.util.*;
 
-	private int[][] board;
-	
-	@Override
-	public int solve(int[][] board) {
-		int score = 0;
-		this.board = board;
-		return solveRec(constraints);
-		
-		
+public class AC3Solver {
+
+    public AC3Solver() {
+    }
+
+
+    // ??? Variablen nicht im Board halten, sondern lokal (in der Hierarchie neben Board und Constraints)?
+    //      Vorteil:  Kein zusätzliches Board für Kantenkonsistenz notwendig (in dem die Domainwerte verändert werden)
+    //      Nachteil: Variablen aus Board herausziehen und Collection/2d-array zur Haltung der Variablen an ConstraintBuilder übergeben?
+
+
+    public int solve(Board board) {
+        int score = 0;
+
+        // Lege lokale Kopie des Boards an, um zu verhindern, dass Änderungen an board nach oben propagiert werden
+        Board localBoardCopy = new Board(board);
+
+        // Lege weitere lokale Kopie an, auf der das Kantenkonsistenzverfahren arbeiten kann
+        // (dort werden Domain-Werte verändert, was nicht an weiterzugebenen Kopie geschehen darf)
+        Board consistencyBoardCopy = new Board(board);
+
+        // Bereite Constraints für die Kantenkonsistenzprüfung vor
+        Set<Constraint> constraints = ConstraintBuilder.buildConstraints(consistencyBoardCopy);
+
+        // Prüfe übergebenes Board anhand seiner consistency-Kopie auf Kantenkonsistenz
+        makeArcsConsistent(constraints);
+        for (int x = 0; x < 9; x++) {
+            for (int y = 0; y < 9; y++) {
+                // Wenn nach Herstellung der Kantenkonsistenz Felder existieren, in denen nicht genau eine Möglichkeit
+                // übrig ist (=0 oder >1), dann ist die gewählte Belegung ungültig oder das Spielfeld mehrdeutig
+                if (consistencyBoardCopy.getVariable(x, y).getDomain().size() != 1) {
+                    return -1;
+                }
+            }
+        }
+
+        // Prüfe anhand der lokalen Kopie, ob nun alle Felder belegt sind
+        boolean solved = true; // technisch zuerst annehmen, es wäre gelöst (bis das Gegenteil festgestellt wird)
+        for (int x = 0; x < 9; x++) {
+            for (int y = 0; y < 9; y++) {
+                if (localBoardCopy.getFieldValue(x, y) == 0) {
+                    solved = false;
+                }
+            }
+        }
+        // Falls alle Felder belegt sind, ist das Board gelöst (und da die Kantenkonsistenz durchgelaufen ist
+        // ist die Lösung auch gültig)
+        if (solved) {
+            return 1;
+        }
+
+        // Falls das Board noch nicht gelöst wurde, geht es weiter mit dem Ausprobieren...
+
+        // Queue mit allen Variablen anlegen, in denen Werte ausprobiert werden können
+        LinkedList<FieldConstraintVariable> varsToCheck = new LinkedList<>();
+        for (int x = 0; x < 9; x++) {
+            for (int y = 0; y < 9; y++) {
+                if (board.getVariable(x, y).getDomain().size() != 1) {
+                    varsToCheck.add(board.getVariable(x, y));
+                }
+            }
+        }
+
+        // Zu prüfende Variablen in Queue vorsortieren, damit die mit den wenigsten Möglichkeiten zuerst geprüft werden
+        varsToCheck.sort((v1, v2) -> {
+            if (v1.getDomain().size() == v2.getDomain().size()) {
+                return 0;
+            } else if (v1.getDomain().size() > v2.getDomain().size()) {
+                return 1;
+            } else {
+                return -1;
+            }
+        });
+
+        // Probiere in jedem noch offenen Feld alle Möglichkeiten aus
+        for (FieldConstraintVariable<Field> fieldConstVar : varsToCheck) {
+            for (Integer trialValue : fieldConstVar.getDomain()) {
+                localBoardCopy.setFieldValue(
+                        fieldConstVar.getVariable().getX(),
+                        fieldConstVar.getVariable().getY(),
+                        trialValue); // Testwert im lokalen Board setzen
+                score = solve(localBoardCopy);
+
+                if (score != -1) {
+                    return score + 1;
+                }
+
+                // TODO Wenn Testwert nicht zum Erfolg führt, dann muss der Wert zurückgenommen werden und
+                // TODO ein nächster ausprobiert werden
+                // Wann ist eine Belegung ungültig? Wenn -1 zurückkommt
+                // wert hier schon gesetzt
+            }
+        }
+
+        return score;
+
+        // TODO mache lokale Kopie (später zum weitergeben) vom übergebenen Board
+        //  => sonst werden an board an das übergebene Board propagiert!
+        // TODO mache Arbeitskopie vom übergebenen Board
+        // TODO Führe Kantenkonsistenz auf Arbeitskopie aus
+        // TODO Prüfe ob jede Domain der Arbeitskopie nur noch 1 Element besitzt
+        // TODO     JA   => fahre fort
+        // TODO     NEIN => gibt -1 zurück
+
+        // TODO Wähle in lokaler Kopie ein Feld, das belegt ist und dessen Domain möglichst klein ist (schleife über Feldvariablen)
+        // TODO Setze einen Wert aus der Domain der gewählten Feldvariablen im zugehörigen Boardfeld (schleife über Domainwerte)
+        // TODO Rufe return solve(board) + 1 auf
+
+        //return score;
 		/*
 		 * 	function AC3
 		 // Reduziert Domänen
@@ -48,85 +139,28 @@ public class AC3Solver extends Solver {
 			                   add to queue (Z,X)
 			    return csp
 		*/
-	}
-	private int solveRec(Set<Constraint> constraints) {
-		makeArcsConsistent((Collection <? extends Constraint<Field>>) constraints);
-		Set<ConstraintVariable> vars = new HashSet<>();
-		boolean solved = true;
-		//hol dir mal alle ConstVars und pack sie in ein Set
-		for(Constraint constraint: constraints) {
-			ConstraintVariable var = constraint.getSource();
-			vars.add(var);
-			if(var.getDomain().size()>1) {
-				solved = false;
-			}
-		}
-		if(solved) {
-			return 1;
-		}
-		//gehe alle interessanten und erlaubten Feldgrößen durch
-		for(int i = 2; i <= 9; ++i) {
-			for(ConstraintVariable<Field, Integer> var: vars) {
-				if(var.getDomain().size() == i) {
-					Set<Constraint> clonedConstraints = cloneContraints(constraints);
-					for(Integer annahme: var.getDomain()) {
-						for(Constraint clonedConstraint: clonedConstraints) {
-							if(clonedConstraint.getSource().equals(var)) {
-								clonedConstraint.getSource().getDomain().retainAll(Set.of(i));
-								solveRec(clonedConstraints);
-							}
-						}
-					}
-				}
-			}
-		}
-		
-	}
-	
-	private int solve__(Set<Constraint> constraints, ConstraintVariable<Field, Integer> annahme) {
-		// constraints (in darüber liegendem aufruf gecloned) und annahme vereinen
-	
-		// vereinigte menge auf kantenkonsistenz prüfen
-		// wenn konsistent dann
-		//		nächste variable mit mind. zwei elementen suchen (best choice...)
-		//		per for-schleife über ihre domain einen möglichen wert für die annahme wählen
-		//		und wieder solve__ mit geclonten constraints und der annahme aufrufen 
-		
-		//		
-		// wenn NICHT kosistent dann
-		//		-1 zurückgeben
-	}
-	
-	
-	private Set<Constraint> cloneContraints(Set<Constraint> constraints) {
-		Set<Constraint> clonedConstraints = new HashSet<>();
-		for(Constraint constraint: constraints) {
-			clonedConstraints.add(constraint.cloneConst());
-		}
-		return clonedConstraints;
-	}
-	public boolean makeArcsConsistent(Collection<? extends Constraint<Field>> constraints) {
-		// int score = 0;
-		LinkedList<Constraint<Field>> q = new LinkedList<>();
-		
-		q.addAll(constraints);
-		
-		while (!q.isEmpty()) {
-			
-			// score++;
-			
-			// erste kante(x,y) aus Queue holen
-			Constraint<Field> constraint = q.pop();
-			FieldConstraintVariable x = (FieldConstraintVariable) constraint.getSource();
-			FieldConstraintVariable y = (FieldConstraintVariable) constraint.getTarget();
-			
-			if (revise(x, y)) {
-				// alle kanten hinzufügen, in denen x nachbar von z ist kante(z, x)
-				q.addAll(getArcsToNeighboursOf(x, constraints));
-			}
-		}
-		return true;
-	}
+    }
+
+    public boolean makeArcsConsistent(Set<Constraint> constraints) {
+        // int score = 0;
+        LinkedList<Constraint> q = new LinkedList<>();
+
+        q.addAll(constraints);
+
+        while (!q.isEmpty()) {
+
+            // erste kante(x,y) aus Queue holen
+            Constraint<Field> constraint = q.pop();
+            ConstraintVariable x = constraint.getSource();
+            ConstraintVariable y = constraint.getTarget();
+
+            if (revise(x, y)) {
+                // alle kanten hinzufügen, in denen x nachbar von z ist kante(z, x)
+                q.addAll(getArcsToNeighboursOf(x, constraints));
+            }
+        }
+        return true;
+    }
 	
 	/*
 	 * 	procedure AC3-LA(cv)
@@ -144,59 +178,52 @@ public class AC3Solver extends Solver {
 	 * 
 	 * 
 	 */
-	
-	public List<Constraint<Field>> getArcsToNeighboursOf(FieldConstraintVariable fcv,Collection<? extends Constraint<Field>> constraints) {
-		List<Constraint<Field>> result = new LinkedList<>();
-		
-		for (Constraint<Field> constraint : constraints) {
-			FieldConstraintVariable y = (FieldConstraintVariable) constraint.getTarget();
-			
-			// wenn die variable y an zweiterstelle gleich fcv ist
-			//	dann ist x ein nachbar zu fcv bzw. y
-			if (y.getVariable().equals(fcv.getVariable())) {
-				result.add(constraint);
-			}
-		}
-		return result;
-	}
-	
-	public int getValueOf(Field field) {
-		return board[field.getX()][field.getY()];		
-	}
-	
-	public boolean isFieldEmpty(Field field) {
-		return getValueOf(field) == 0;
-	}
-	
-	/*
-	 * REVISE löscht nur Werte von Vi
-	 * Und zwar diejenigen, für die es keinen den Constraint erfüllenden
-	 * Wert von Vj gibt 
-	 */
-	public boolean revise(ConstraintVariable<Field, Integer> vi, ConstraintVariable<Field, Integer> vj) {
-		boolean delete = false;
-		Set<Integer> di = vi.getDomain();
-		Set<Integer> dj = vj.getDomain();
-		// Behilfsset für anschließende Löschung, da während der Iteration
-		// keine Änderung an der Menge, über die iteriert wird,
-		// vorgenommen werden darf (java says no).
-		Set<Integer> valuesToBeDeleted = new HashSet<>();
-		
-		for (Integer i : di) {
-			boolean satisfied = false;
-			
-			for (Integer j : dj) {
-				if (i != j) {
-					satisfied = true;
-					break;
-				}
-			}
-			if (!satisfied) {
-				valuesToBeDeleted.add(i);
-				delete = true;
-			}
-		}
-		di.removeAll(valuesToBeDeleted);
-		return delete;
-	}
+
+    public List<Constraint<Field>> getArcsToNeighboursOf(ConstraintVariable fcv, Set<Constraint> constraints) {
+        List<Constraint<Field>> result = new LinkedList<>();
+
+        for (Constraint<Field> constraint : constraints) {
+            ConstraintVariable y = constraint.getTarget();
+
+            // wenn die variable y an zweiterstelle gleich fcv ist
+            //	dann ist x ein nachbar zu fcv bzw. y
+            if (y.getVariable().equals(fcv.getVariable())) {
+                result.add(constraint);
+            }
+        }
+        return result;
+    }
+
+    /*
+     * REVISE löscht nur Werte von Vi
+     * Und zwar diejenigen, für die es keinen den Constraint erfüllenden
+     * Wert von Vj gibt
+     */
+    public boolean revise(ConstraintVariable<Field, Integer> vi, ConstraintVariable<Field, Integer> vj) {
+        boolean delete = false;
+        Set<Integer> di = vi.getDomain();
+        Set<Integer> dj = vj.getDomain();
+        // Behilfsset für anschließende Löschung, da während der Iteration keine Änderung an der Menge,
+        // über die iteriert wird, vorgenommen werden darf (java says no).
+        Set<Integer> valuesToBeDeleted = new HashSet<>();
+
+        for (Integer i : di) {
+            boolean satisfied = false;
+
+            for (Integer j : dj) {
+                if (i != j) {
+                    // mind. ein erfüllendes Constraint gefunden
+                    satisfied = true;
+                    // daher kann mit dem nächsten i fortgefahren werden
+                    break;
+                }
+            }
+            if (!satisfied) {
+                valuesToBeDeleted.add(i);
+                delete = true;
+            }
+        }
+        di.removeAll(valuesToBeDeleted);
+        return delete;
+    }
 }

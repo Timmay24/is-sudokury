@@ -6,5 +6,5 @@ public interface Constraint<E> {
 	public ConstraintVariable<E, Integer> getSource();
 	public ConstraintVariable<E, Integer> getTarget();
 	public boolean isConsistent();
-	public Constraint cloneConst();
+	public Constraint copy();
 }

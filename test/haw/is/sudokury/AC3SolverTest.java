@@ -1,30 +1,25 @@
 package haw.is.sudokury;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import haw.is.sudokury.algorithms.AC3Solver;
+import haw.is.sudokury.constraints.ConstraintVariable;
+import haw.is.sudokury.models.v2.Field;
+import haw.is.sudokury.models.v2.Board;
+import org.junit.Test;
 
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.Set;
 
-import org.junit.Test;
-
-import haw.is.sudokury.algorithms.AC3Solver;
-import haw.is.sudokury.constraints.AllDiffConstraint;
-import haw.is.sudokury.constraints.FieldConstraintVariable;
-import haw.is.sudokury.constraints.interfaces.Constraint;
-import haw.is.sudokury.models.Field;
+import static org.junit.Assert.*;
 
 public class AC3SolverTest {
 
 	@Test
 	public void testReviseFalse() {
-		FieldConstraintVariable vi = new FieldConstraintVariable(Field.getField(1, 2));
-		FieldConstraintVariable vj = new FieldConstraintVariable(Field.getField(1, 3));
+		ConstraintVariable vi = new ConstraintVariable(Field.of(1, 2), new HashSet<>(Arrays.asList(2,3)));
+		ConstraintVariable vj = new ConstraintVariable(Field.of(1, 3), new HashSet<>(Arrays.asList(1,2)));
 		
-		vi.getDomain().retainAll(Set.of(2,3));
-		vj.getDomain().retainAll(Set.of(1,2));
+		vi.getDomain().retainAll(new HashSet<>(Arrays.asList(2,3)));
+		vj.getDomain().retainAll(new HashSet<>(Arrays.asList(1,2)));
 		
 		AC3Solver solver = new AC3Solver();
 		assertFalse(solver.revise(vi, vj));
@@ -34,26 +29,40 @@ public class AC3SolverTest {
 	
 	@Test
 	public void testReviseTrue() {
-		FieldConstraintVariable vi = new FieldConstraintVariable(Field.getField(1, 2));
-		FieldConstraintVariable vj = new FieldConstraintVariable(Field.getField(1, 3));
+		ConstraintVariable vi = new ConstraintVariable(Field.of(1, 2), new HashSet<>(Arrays.asList(1,2,3)));
+		ConstraintVariable vj = new ConstraintVariable(Field.of(1, 3), new HashSet<>(Arrays.asList(2)));
 		
-		vi.getDomain().retainAll(Set.of(1,2,3));
-		vj.getDomain().retainAll(Set.of(2));
+		vi.getDomain().retainAll(new HashSet<>(Arrays.asList(1,2,3)));
+		vj.getDomain().retainAll(new HashSet<>(Arrays.asList(2)));
 		
 		AC3Solver solver = new AC3Solver();
 		assertTrue(solver.revise(vi, vj));
 		assertEquals(vi.getDomain(), new HashSet<>(Arrays.asList(1,3)));
 		assertEquals(vj.getDomain(), new HashSet<>(Arrays.asList(2)));
 	}
+
+	@Test
+    public void testGeneratedBoardWithThreeBlankFields() {
+	    Board testBoard = new Board(new SudokuGenerator().nextBoard());
+	    testBoard.eraseFieldValue(1,1);
+	    testBoard.eraseFieldValue(4,5);
+	    testBoard.eraseFieldValue(7,3);
+
+	    AC3Solver solver = new AC3Solver();
+	    int score = solver.solve(testBoard);
+        System.out.println("Testscore: " + score);
+	    assertTrue(score != 1);
+    }
 	
+	/*
 	@Test
 	public void testMakeArcsConsistentWith3Fields() {
 		//int[][] board = new SudokuGenerator().nextBoard();
 		AC3Solver solver = new AC3Solver();
-		FieldConstraintVariable a, b, c;
-		a = new FieldConstraintVariable(Field.getField(0, 0));
-		b = new FieldConstraintVariable(Field.getField(0, 1));
-		c = new FieldConstraintVariable(Field.getField(1, 0));
+		ConstraintVariable<Field, Integer> a, b, c;
+		a = new ConstraintVariable<>(Field.getField(0, 0));
+		b = new ConstraintVariable<>(Field.getField(0, 1));
+		c = new ConstraintVariable<>(Field.getField(1, 0));
 		
 		a.getDomain().clear();
 		a.getDomain().addAll(Set.of(1,2,3));
@@ -78,4 +87,5 @@ public class AC3SolverTest {
 		assertEquals(b.getDomain(), Set.of(3));
 		assertEquals(c.getDomain(), Set.of(1));
 	}
+	*/
 }
