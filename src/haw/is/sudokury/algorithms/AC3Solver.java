@@ -180,12 +180,12 @@ public class AC3Solver extends Solver {
 
 			// erste kante(x,y) aus Queue holen
 			Constraint<Field> constraint = q.pop();
-			FieldConstraintVariable x = (FieldConstraintVariable) constraint.getSource();
-			FieldConstraintVariable y = (FieldConstraintVariable) constraint.getTarget();
+			FieldConstraintVariable source = (FieldConstraintVariable) constraint.getSource();
+			FieldConstraintVariable target = (FieldConstraintVariable) constraint.getTarget();
 
-			if (revise(x, y)) {
+			if (revise(source, target)) {
 				// alle kanten hinzufügen, in denen x nachbar von z ist kante(z, x)
-				q.addAll(getArcsToNeighboursOf(x, constraints));
+				q.addAll(getArcsToNeighboursOf(source, constraints));
 			}
 		}
 		return true;
@@ -254,5 +254,19 @@ public class AC3Solver extends Solver {
 		}
 		di.removeAll(valuesToBeDeleted);
 		return delete;
+	}
+
+	public void ConstraintsToString(Set<Constraint> constraints) {
+		for (int y = 0; y < 9; ++y) {
+			System.out.println();
+			for (int x = 0; x < 9; ++x) {
+				for (Constraint<Field> constraint : constraints) {
+					ConstraintVariable<Field, Integer> var = constraint.getSource();
+					if (var.getVariable().getX() == x && var.getVariable().getY() == y) {
+						System.out.print(" - " + var.getVariable() + ": " + var.getDomain());
+					}
+				}
+			}
+		}
 	}
 }
