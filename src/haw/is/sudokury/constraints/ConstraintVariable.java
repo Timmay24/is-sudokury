@@ -50,9 +50,9 @@ public abstract class ConstraintVariable<T, V> implements Comparable<V>{
         if (this.domain.size() == var.domain.size()) {
         	return 0;
         } else if (this.domain.size() > var.domain.size()) {
-        	return -1;
-        } else {
         	return 1;
+        } else {
+        	return -1;
         }
     }
 
