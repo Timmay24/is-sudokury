@@ -32,7 +32,8 @@ public class AC3Solver extends Solver {
 			ConstraintVariable<Field, Integer> var = constraint.getSource();
 			if (!constVars.contains(var)) {
 				constVars.add(var);
-				// wenn die Variable bereits belegt ist, also das Feld ausgef�llt ist:
+				// wenn die Variable bereits belegt ist, also das Feld
+				// ausgef�llt ist:
 				int x = (var.getVariable()).getX();
 				int y = (var.getVariable()).getY();
 				int value = board[x][y];
@@ -46,7 +47,8 @@ public class AC3Solver extends Solver {
 			var = constraint.getTarget();
 			if (!constVars.contains(constraint.getTarget())) {
 				constVars.add(var);
-				// wenn die Variable bereits belegt ist, also das Feld ausgef�llt ist:
+				// wenn die Variable bereits belegt ist, also das Feld
+				// ausgef�llt ist:
 				int x = (var.getVariable()).getX();
 				int y = (var.getVariable()).getY();
 				int value = board[x][y];
@@ -68,7 +70,8 @@ public class AC3Solver extends Solver {
 		Collections.reverse(constVars);
 		// f�r die M�glichkeiten
 		for (ConstraintVariable<Field, Integer> var : constVars) {
-			// versuche die Domain durch wenn mehr als 1 Element noch enthalten ist
+			// versuche die Domain durch wenn mehr als 1 Element noch enthalten
+			// ist
 			if (var.getDomain().size() > 1) {
 				for (int domain : var.getDomain()) {
 					// klone die Constraints
@@ -145,12 +148,14 @@ public class AC3Solver extends Solver {
 	}
 
 	private int solve__(Set<Constraint> constraints, ConstraintVariable<Field, Integer> annahme) {
-		// constraints (in darüber liegendem aufruf gecloned) und annahme vereinen
+		// constraints (in darüber liegendem aufruf gecloned) und annahme
+		// vereinen
 
 		// vereinigte menge auf kantenkonsistenz prüfen
 		// wenn konsistent dann
 		// nächste variable mit mind. zwei elementen suchen (best choice...)
-		// per for-schleife über ihre domain einen möglichen wert für die annahme
+		// per for-schleife über ihre domain einen möglichen wert für die
+		// annahme
 		// wählen
 		// und wieder solve__ mit geclonten constraints und der annahme aufrufen
 
@@ -184,7 +189,8 @@ public class AC3Solver extends Solver {
 			FieldConstraintVariable target = (FieldConstraintVariable) constraint.getTarget();
 
 			if (revise(source, target)) {
-				// alle kanten hinzufügen, in denen x nachbar von z ist kante(z, x)
+				// alle kanten hinzufügen, in denen x nachbar von z ist
+				// kante(z, x)
 				q.addAll(getArcsToNeighboursOf(source, constraints));
 			}
 		}
@@ -193,8 +199,8 @@ public class AC3Solver extends Solver {
 
 	/*
 	 * procedure AC3-LA(cv) Q <- {(Vi,Vcv) in arcs(G),i>cv}; consistent <- true;
-	 * while not Q empty & consistent select and delete any arc (Vk,Vm) from Q; if
-	 * REVISE(Vk,Vm) then Q <- Q union {(Vi,Vk) such that (Vi,Vk) in
+	 * while not Q empty & consistent select and delete any arc (Vk,Vm) from Q;
+	 * if REVISE(Vk,Vm) then Q <- Q union {(Vi,Vk) such that (Vi,Vk) in
 	 * arcs(G),i#k,i#m,i>cv} consistent <- not Dk empty endif endwhile return
 	 * consistent end AC3-LA
 	 * 
@@ -226,13 +232,16 @@ public class AC3Solver extends Solver {
 	}
 
 	/*
-	 * REVISE löscht nur Werte von Vi Und zwar diejenigen, für die es keinen den
-	 * Constraint erfüllenden Wert von Vj gibt
+	 * REVISE löscht nur Werte von Vi Und zwar diejenigen, für die es keinen
+	 * den Constraint erfüllenden Wert von Vj gibt
 	 */
 	public boolean revise(ConstraintVariable<Field, Integer> vi, ConstraintVariable<Field, Integer> vj) {
 		boolean delete = false;
 		Set<Integer> di = vi.getDomain();
 		Set<Integer> dj = vj.getDomain();
+		if (di.isEmpty() || dj.isEmpty()) {
+			return false;
+		}
 		// Behilfsset für anschließende Löschung, da während der Iteration
 		// keine Änderung an der Menge, über die iteriert wird,
 		// vorgenommen werden darf (java says no).
@@ -240,7 +249,6 @@ public class AC3Solver extends Solver {
 
 		for (Integer i : di) {
 			boolean satisfied = false;
-
 			for (Integer j : dj) {
 				if (i != j) {
 					satisfied = true;
