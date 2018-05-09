@@ -40,6 +40,77 @@ public class AC3SolverTest {
 	// board[0][0] = 0;
 	// assertTrue(solver.solve(board) > 0);
 	// }
+	@Test
+	public void solveBeginning() {
+		int x = 0;
+		int y = 0;
+		board[x][y] = 0;
+
+		solver.solve(board);
+
+		for (Constraint<Field> constraint : solver.getConstraints()) {
+			assertEquals(1, constraint.getSource().getDomain().size());
+			assertEquals(1, constraint.getTarget().getDomain().size());
+		}
+	}
+
+	@Test
+	public void solveDiagonalZero() {
+		for (int i = 0; i < 9; ++i) {
+			board[i][i] = 0;
+		}
+
+		solver.solve(board);
+
+		for (Constraint<Field> constraint : solver.getConstraints()) {
+			assertEquals(1, constraint.getSource().getDomain().size());
+			assertEquals(1, constraint.getTarget().getDomain().size());
+		}
+	}
+
+	@Test
+	public void solveVerticalZero() {
+		for (int i = 0; i < 9; ++i) {
+			board[i][0] = 0;
+		}
+
+		solver.solve(board);
+
+		for (Constraint<Field> constraint : solver.getConstraints()) {
+			assertEquals(1, constraint.getSource().getDomain().size());
+			assertEquals(1, constraint.getTarget().getDomain().size());
+		}
+	}
+
+	@Test
+	public void solveHorizontalZero() {
+		for (int i = 0; i < 9; ++i) {
+			board[3][i] = 0;
+		}
+
+		solver.solve(board);
+
+		for (Constraint<Field> constraint : solver.getConstraints()) {
+			assertEquals(1, constraint.getSource().getDomain().size());
+			assertEquals(1, constraint.getTarget().getDomain().size());
+		}
+	}
+
+	@Test
+	public void solveActuallyNotSolveable() {
+		for (int x = 0; x < 9; ++x) {
+			for (int y = 0; y < 9; ++y) {
+				board[x][y] = 0;
+			}
+		}
+
+		solver.solve(board);
+
+		for (Constraint<Field> constraint : solver.getConstraints()) {
+			assertEquals(9, constraint.getSource().getDomain().size());
+			assertEquals(9, constraint.getTarget().getDomain().size());
+		}
+	}
 
 	@Test
 	public void makeArcConsMissingBeginning() {
@@ -68,10 +139,81 @@ public class AC3SolverTest {
 				var.getDomain().add(value);
 			}
 		}
-		System.out.println(varZero.getDomain());
-		solver.makeArcsConsistent((Collection<? extends Constraint<Field>>) constraints);
-		System.out.println(varZero.getDomain());
+		solver.makeArcsConsistent(constraints);
+
+		for (Constraint<Field> constraint : solver.getConstraints()) {
+			assertEquals(1, constraint.getSource().getDomain().size());
+			assertEquals(1, constraint.getTarget().getDomain().size());
+		}
+
+	}
+
+	@Test
+	public void makeArcConsMissingMiddle() {
+		int x = 5;
+		int y = 4;
+		board[x][y] = 0;
+		ConstraintVariable<Field, Integer> varZero = null;
+		Set<Constraint> constraints = solver.getConstraints();
 		for (Constraint<Field> constraint : constraints) {
+			ConstraintVariable<Field, Integer> var = constraint.getSource();
+			if (!var.getVariable().equals(Field.getField(x, y))) {
+				int xVar = var.getVariable().getX();
+				int yVar = var.getVariable().getY();
+				int value = board[xVar][yVar];
+				var.getDomain().clear();
+				var.getDomain().add(value);
+			} else {
+				varZero = var;
+			}
+			var = constraint.getTarget();
+			if (!var.getVariable().equals(Field.getField(x, y))) {
+				int xVar = var.getVariable().getX();
+				int yVar = var.getVariable().getY();
+				int value = board[xVar][yVar];
+				var.getDomain().clear();
+				var.getDomain().add(value);
+			}
+		}
+		solver.makeArcsConsistent(constraints);
+
+		for (Constraint<Field> constraint : solver.getConstraints()) {
+			assertEquals(1, constraint.getSource().getDomain().size());
+			assertEquals(1, constraint.getTarget().getDomain().size());
+		}
+
+	}
+
+	@Test
+	public void makeArcConsMissingEnd() {
+		int x = 8;
+		int y = 8;
+		board[x][y] = 0;
+		ConstraintVariable<Field, Integer> varZero = null;
+		Set<Constraint> constraints = solver.getConstraints();
+		for (Constraint<Field> constraint : constraints) {
+			ConstraintVariable<Field, Integer> var = constraint.getSource();
+			if (!var.getVariable().equals(Field.getField(x, y))) {
+				int xVar = var.getVariable().getX();
+				int yVar = var.getVariable().getY();
+				int value = board[xVar][yVar];
+				var.getDomain().clear();
+				var.getDomain().add(value);
+			} else {
+				varZero = var;
+			}
+			var = constraint.getTarget();
+			if (!var.getVariable().equals(Field.getField(x, y))) {
+				int xVar = var.getVariable().getX();
+				int yVar = var.getVariable().getY();
+				int value = board[xVar][yVar];
+				var.getDomain().clear();
+				var.getDomain().add(value);
+			}
+		}
+		solver.makeArcsConsistent(constraints);
+
+		for (Constraint<Field> constraint : solver.getConstraints()) {
 			assertEquals(1, constraint.getSource().getDomain().size());
 			assertEquals(1, constraint.getTarget().getDomain().size());
 		}
@@ -240,7 +382,7 @@ public class AC3SolverTest {
 		c.getDomain().clear();
 		c.getDomain().addAll(Arrays.asList(1));
 
-		Set<Constraint<Field>> constraints = new HashSet<>();
+		Set<Constraint> constraints = new HashSet<>();
 		constraints.add(new AllDiffConstraint<Field>(a, b));
 		constraints.add(new AllDiffConstraint<Field>(a, c));
 		constraints.add(new AllDiffConstraint<Field>(b, a));
@@ -259,7 +401,7 @@ public class AC3SolverTest {
 	@Test
 	public void testMakeArcsConsistentNoConstraints() {
 
-		Set<Constraint<Field>> constraints = new HashSet<>();
+		Set<Constraint> constraints = new HashSet<>();
 		solver.makeArcsConsistent(constraints);
 		assertTrue(true);
 	}
@@ -275,7 +417,7 @@ public class AC3SolverTest {
 
 		b.getDomain().clear();
 
-		Set<Constraint<Field>> constraints = new HashSet<>();
+		Set<Constraint> constraints = new HashSet<>();
 		constraints.add(new AllDiffConstraint<Field>(a, b));
 
 		solver.makeArcsConsistent(constraints);
@@ -295,7 +437,7 @@ public class AC3SolverTest {
 		a.getDomain().addAll(Arrays.asList(1));
 		b.getDomain().clear();
 
-		Set<Constraint<Field>> constraints = new HashSet<>();
+		Set<Constraint> constraints = new HashSet<>();
 		constraints.add(new AllDiffConstraint<Field>(a, b));
 
 		solver.makeArcsConsistent(constraints);
@@ -315,7 +457,7 @@ public class AC3SolverTest {
 		b.getDomain().clear();
 		b.getDomain().addAll(Arrays.asList(1));
 
-		Set<Constraint<Field>> constraints = new HashSet<>();
+		Set<Constraint> constraints = new HashSet<>();
 		constraints.add(new AllDiffConstraint<Field>(a, b));
 
 		solver.makeArcsConsistent(constraints);
@@ -336,7 +478,7 @@ public class AC3SolverTest {
 		b.getDomain().clear();
 		b.getDomain().addAll(Arrays.asList(2));
 
-		Set<Constraint<Field>> constraints = new HashSet<>();
+		Set<Constraint> constraints = new HashSet<>();
 		constraints.add(new AllDiffConstraint<Field>(a, b));
 
 		solver.makeArcsConsistent(constraints);
@@ -357,7 +499,7 @@ public class AC3SolverTest {
 		b.getDomain().clear();
 		b.getDomain().addAll(Arrays.asList(1));
 
-		Set<Constraint<Field>> constraints = new HashSet<>();
+		Set<Constraint> constraints = new HashSet<>();
 		constraints.add(new AllDiffConstraint<Field>(a, b));
 
 		solver.makeArcsConsistent(constraints);
@@ -378,7 +520,7 @@ public class AC3SolverTest {
 		b.getDomain().clear();
 		b.getDomain().addAll(Arrays.asList(1));
 
-		Set<Constraint<Field>> constraints = new HashSet<>();
+		Set<Constraint> constraints = new HashSet<>();
 		constraints.add(new AllDiffConstraint<Field>(a, b));
 
 		solver.makeArcsConsistent(constraints);
@@ -402,7 +544,7 @@ public class AC3SolverTest {
 		c.getDomain().clear();
 		c.getDomain().addAll(Arrays.asList(2));
 
-		Set<Constraint<Field>> constraints = new HashSet<>();
+		Set<Constraint> constraints = new HashSet<>();
 		constraints.add(new AllDiffConstraint<Field>(a, b));
 		constraints.add(new AllDiffConstraint<Field>(b, c));
 
@@ -428,7 +570,7 @@ public class AC3SolverTest {
 		c.getDomain().clear();
 		c.getDomain().addAll(Arrays.asList(2));
 
-		Set<Constraint<Field>> constraints = new HashSet<>();
+		Set<Constraint> constraints = new HashSet<>();
 		constraints.add(new AllDiffConstraint<Field>(a, b));
 		constraints.add(new AllDiffConstraint<Field>(b, c));
 		constraints.add(new AllDiffConstraint<Field>(c, a));

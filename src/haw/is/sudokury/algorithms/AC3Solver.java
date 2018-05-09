@@ -20,7 +20,7 @@ public class AC3Solver extends Solver {
 	}
 
 	private int[][] board;
-	List<ConstraintVariable> constVars;;
+	List<ConstraintVariable> constVars;
 
 	@Override
 	public int solve(int[][] board) {
@@ -61,7 +61,7 @@ public class AC3Solver extends Solver {
 
 		}
 		// mache Kantenkonsistent
-		makeArcsConsistent((Collection<? extends Constraint<Field>>) constraints);
+		makeArcsConsistent(constraints);
 		// ist bereits gelöst?
 		if (isSolved(constraints)) {
 			return 1;
@@ -97,7 +97,7 @@ public class AC3Solver extends Solver {
 
 	private int solve_(Set<Constraint> constraints) {
 		// mache Kantenkonsistent
-		makeArcsConsistent((Collection<? extends Constraint<Field>>) constraints);
+		makeArcsConsistent(constraints);
 		// ist bereits gelöst?
 		if (isSolved(constraints)) {
 			return 1;
@@ -173,9 +173,9 @@ public class AC3Solver extends Solver {
 		return clonedConstraints;
 	}
 
-	public boolean makeArcsConsistent(Collection<? extends Constraint<Field>> constraints) {
+	public boolean makeArcsConsistent(Set<Constraint> constraints) {
 		// int score = 0;
-		LinkedList<Constraint<Field>> q = new LinkedList<>();
+		LinkedList<Constraint> q = new LinkedList<>();
 
 		q.addAll(constraints);
 
@@ -195,6 +195,7 @@ public class AC3Solver extends Solver {
 			}
 		}
 		return true;
+
 	}
 
 	/*
@@ -207,8 +208,7 @@ public class AC3Solver extends Solver {
 	 * 
 	 */
 
-	public List<Constraint<Field>> getArcsToNeighboursOf(FieldConstraintVariable fcv,
-			Collection<? extends Constraint<Field>> constraints) {
+	public List<Constraint<Field>> getArcsToNeighboursOf(FieldConstraintVariable fcv, Set<Constraint> constraints) {
 		List<Constraint<Field>> result = new LinkedList<>();
 
 		for (Constraint<Field> constraint : constraints) {
@@ -264,12 +264,12 @@ public class AC3Solver extends Solver {
 		return delete;
 	}
 
-	public void ConstraintsToString(Set<Constraint> constraints) {
+	public void constraintsToString(Set<Constraint> constraints) {
 		for (int y = 0; y < 9; ++y) {
 			System.out.println();
 			for (int x = 0; x < 9; ++x) {
 				for (Constraint<Field> constraint : constraints) {
-					ConstraintVariable<Field, Integer> var = constraint.getSource();
+					ConstraintVariable<Field, Integer> var = constraint.getTarget();
 					if (var.getVariable().getX() == x && var.getVariable().getY() == y) {
 						System.out.print(" - " + var.getVariable() + ": " + var.getDomain());
 					}
