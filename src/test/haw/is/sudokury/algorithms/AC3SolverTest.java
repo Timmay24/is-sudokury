@@ -98,10 +98,17 @@ public class AC3SolverTest {
 
 	@Test
 	public void solveActuallyNotSolveable() {
-		for (int x = 0; x < 9; ++x) {
-			for (int y = 0; y < 9; ++y) {
-				board[x][y] = 0;
+		// Das Board soll keine 1en und 2en haben (uneindeutig)
+		// Wird trotzdem gelöst weil eine Annahme die uneindeutigkeit auf
+		// zufällige Art auflöst
+		for (int y = 0; y < 9; ++y) {
+			for (int x = 0; x < 9; ++x) {
+				if (board[x][y] == 1 || board[x][y] == 2) {
+					board[x][y] = 0;
+				}
+				System.out.print("" + board[x][y]);
 			}
+			System.out.println();
 		}
 
 		solver.solve(board);
@@ -580,5 +587,28 @@ public class AC3SolverTest {
 		assertEquals(a.getDomain(), new HashSet<>(Arrays.asList(2)));
 		assertEquals(b.getDomain(), new HashSet<>(Arrays.asList(1)));
 		assertTrue(c.getDomain().isEmpty());
+	}
+
+	// test cloneConstraints
+	@Test
+	public void testCloneConstraints() {
+		FieldConstraintVariable a, b, c;
+		a = new FieldConstraintVariable(Field.getField(0, 0));
+		b = new FieldConstraintVariable(Field.getField(0, 1));
+		c = new FieldConstraintVariable(Field.getField(1, 1));
+		Set<Constraint> constraints = new HashSet<>();
+		constraints.add(new AllDiffConstraint<Field>(a, b));
+		constraints.add(new AllDiffConstraint<Field>(b, c));
+		constraints.add(new AllDiffConstraint<Field>(c, a));
+		solver = new AC3Solver();
+		Set<Constraint> cloned = solver.cloneContraints(constraints);
+		assertTrue(constraints != cloned);
+		for (Constraint origin : constraints) {
+			for (Constraint clone : cloned) {
+				if (origin.equals(clone)) {
+					assertTrue(origin != clone);
+				}
+			}
+		}
 	}
 }

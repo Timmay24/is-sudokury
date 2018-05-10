@@ -20,13 +20,13 @@ public class AC3Solver extends Solver {
 	}
 
 	private int[][] board;
-	List<ConstraintVariable> constVars;
+	private int iterationCounted;
 
 	@Override
 	public int solve(int[][] board) {
-
+		iterationCounted = 1;
 		this.board = board;
-		constVars = new ArrayList<>();
+		List<ConstraintVariable> constVars = new ArrayList<>();
 		// sammle alle ContVars
 		for (Constraint<Field> constraint : constraints) {
 			ConstraintVariable<Field, Integer> var = constraint.getSource();
@@ -85,22 +85,25 @@ public class AC3Solver extends Solver {
 							clonedVar = clonedConstraint.getTarget();
 						}
 					}
-					int tempResult = solve_(clonedConstraints);
-					if (tempResult >= 1) {
-						return tempResult + 1;
+					// setze das Feld auf die ausgewählte Domain
+					clonedVar.getDomain().clear();
+					clonedVar.getDomain().add(domain);
+					if (solve_(clonedConstraints)) {
+						return iterationCounted;
 					}
 				}
 			}
 		}
-		return -1;
+		return -iterationCounted;
 	}
 
-	private int solve_(Set<Constraint> constraints) {
+	private boolean solve_(Set<Constraint> constraints) {
+		iterationCounted++;
 		// mache Kantenkonsistent
 		makeArcsConsistent(constraints);
 		// ist bereits gelöst?
 		if (isSolved(constraints)) {
-			return 1;
+			return true;
 		}
 		// sammle alle ContVars
 		List<ConstraintVariable> constVars = new ArrayList<>();
@@ -116,26 +119,32 @@ public class AC3Solver extends Solver {
 		Collections.reverse(constVars);
 		// für die Möglichkeiten
 		for (ConstraintVariable<Field, Integer> var : constVars) {
-			// versuche die Domain durch
-			for (int domain : var.getDomain()) {
-				// klone die Constraints
-				Set<Constraint> clonedConstraints = cloneContraints(constraints);
-				// finde den geklonten neuen Var
-				ConstraintVariable<Field, Integer> clonedVar = null;
-				for (Constraint clonedConstraint : clonedConstraints) {
-					if (clonedConstraint.getSource().equals(var)) {
-						clonedVar = clonedConstraint.getSource();
-					} else if (clonedConstraint.getTarget().equals(var)) {
-						clonedVar = clonedConstraint.getTarget();
+			if (var.getDomain().size() > 1) {
+				// versuche die Domain durch
+				for (int domain : var.getDomain()) {
+					// klone die Constraints
+					Set<Constraint> clonedConstraints = cloneContraints(constraints);
+					// finde den geklonten neuen Var
+					ConstraintVariable<Field, Integer> clonedVar = null;
+					for (Constraint clonedConstraint : clonedConstraints) {
+						if (clonedConstraint.getSource().equals(var)) {
+							clonedVar = clonedConstraint.getSource();
+						} else if (clonedConstraint.getTarget().equals(var)) {
+							clonedVar = clonedConstraint.getTarget();
+						}
 					}
-				}
-				int tempResult = solve_(clonedConstraints);
-				if (tempResult >= 1) {
-					return tempResult + 1;
+					// setze die Domain der geklonten var auf den ausgewählten
+					// Wert,
+					clonedVar.getDomain().clear();
+					clonedVar.getDomain().add(domain);
+					// löse mit der Annahme
+					if (solve_(clonedConstraints)) {
+						return true;
+					}
 				}
 			}
 		}
-		return -1;
+		return false;
 	}
 
 	private boolean isSolved(Set<Constraint> constraints) {
@@ -165,7 +174,7 @@ public class AC3Solver extends Solver {
 		return 0;
 	}
 
-	private Set<Constraint> cloneContraints(Set<Constraint> constraints) {
+	public Set<Constraint> cloneContraints(Set<Constraint> constraints) {
 		Set<Constraint> clonedConstraints = new HashSet<>();
 		for (Constraint constraint : constraints) {
 			clonedConstraints.add(constraint.cloneConst());

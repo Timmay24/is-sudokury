@@ -3,6 +3,7 @@ package haw.is.sudokury.constraints;
 import java.util.Set;
 
 import haw.is.sudokury.constraints.interfaces.Constraint;
+import haw.is.sudokury.models.Field;
 
 /*
  * Generic Type E: Type der durch Constraint-Variablen-Klassen genutzt werden 
@@ -10,26 +11,26 @@ import haw.is.sudokury.constraints.interfaces.Constraint;
 
 public class AllDiffConstraint<E> implements Constraint<E> {
 
-    private final ConstraintVariable<E, Integer> f;
-    private final ConstraintVariable<E, Integer> g;
+	private final ConstraintVariable<E, Integer> f;
+	private final ConstraintVariable<E, Integer> g;
 
-	public AllDiffConstraint (ConstraintVariable<E, Integer> f, ConstraintVariable<E, Integer> g) {
-        this.f = f;
-        this.g = g;
-    }
-	
-    public final ConstraintVariable<E, Integer> getSource() {
+	public AllDiffConstraint(ConstraintVariable<E, Integer> f, ConstraintVariable<E, Integer> g) {
+		this.f = f;
+		this.g = g;
+	}
+
+	public final ConstraintVariable<E, Integer> getSource() {
 		return f;
 	}
 
 	public final ConstraintVariable<E, Integer> getTarget() {
 		return g;
 	}
-	
-	public boolean isConsistent() {		
+
+	public boolean isConsistent() {
 		for (Integer fi : f.getDomain()) {
 			boolean satisfied = false;
-			
+
 			for (Integer gi : g.getDomain()) {
 				if (fi != gi) {
 					satisfied = true;
@@ -78,6 +79,6 @@ public class AllDiffConstraint<E> implements Constraint<E> {
 	public Constraint cloneConst() {
 		ConstraintVariable varSource = f.cloneVar();
 		ConstraintVariable varTarget = g.cloneVar();
-		return new AllDiffConstraint(varSource,varTarget);
+		return new AllDiffConstraint(varSource, varTarget);
 	}
 }
