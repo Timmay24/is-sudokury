@@ -93,7 +93,7 @@ public class AC3Solver extends Solver {
 				}
 			}
 		}
-		return -iterationCounted;
+		return -iterationCounted; // wenn nicht lösbar oder mehrdeutig, dann negative Zahl zurückgeben
 	}
 
 	private boolean solve_(Set<Constraint> constraints) {

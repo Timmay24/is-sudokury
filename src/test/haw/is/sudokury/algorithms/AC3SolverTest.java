@@ -1,20 +1,7 @@
 package test.haw.is.sudokury.algorithms;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
-
-import org.junit.Before;
-import org.junit.Test;
-
 import haw.is.sudokury.SudokuGenerator;
 import haw.is.sudokury.algorithms.AC3Solver;
-import haw.is.sudokury.algorithms.Solver;
 import haw.is.sudokury.constraints.AllDiffConstraint;
 import haw.is.sudokury.constraints.ConstraintVariable;
 import haw.is.sudokury.constraints.FieldConstraintVariable;
@@ -99,8 +86,8 @@ public class AC3SolverTest {
 	@Test
 	public void solveActuallyNotSolveable() {
 		// Das Board soll keine 1en und 2en haben (uneindeutig)
-		// Wird trotzdem gelöst weil eine Annahme die uneindeutigkeit auf
-		// zufällige Art auflöst
+		// Wird trotzdem gelï¿½st weil eine Annahme die uneindeutigkeit auf
+		// zufï¿½llige Art auflï¿½st
 		for (int y = 0; y < 9; ++y) {
 			for (int x = 0; x < 9; ++x) {
 				if (board[x][y] == 1 || board[x][y] == 2) {
@@ -404,7 +391,7 @@ public class AC3SolverTest {
 		assertEquals(c.getDomain(), new HashSet<>(Arrays.asList(1)));
 	}
 
-	// test makeArcConst keine Consts - ergebnis läuft durch
+	// test makeArcConst keine Consts - ergebnis lï¿½uft durch
 	@Test
 	public void testMakeArcsConsistentNoConstraints() {
 
