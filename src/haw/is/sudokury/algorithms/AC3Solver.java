@@ -20,6 +20,7 @@ public class AC3Solver extends Solver {
 	public int solve(int[][] board) {
 		iterationCounted = 1;
 		this.board = board;
+		// TODO Refactor: use FieldConstraintVariable instead of generic ConstraintVariable
 		List<ConstraintVariable> constVars = new ArrayList<>();
 		// sammle alle ContVars
 		for (Constraint<Field> constraint : constraints) {
@@ -64,15 +65,15 @@ public class AC3Solver extends Solver {
 		// Collections.reverse(constVars);
 		// für die Möglichkeiten
         constVars.sort((v1, v2) -> {
-            if (((FieldConstraintVariable) v1.getVariable()).getX() == ((FieldConstraintVariable) v2.getVariable()).getX()) {
-                if (((FieldConstraintVariable) v1.getVariable()).getY() == ((FieldConstraintVariable) v2.getVariable()).getY()) {
+            if (((FieldConstraintVariable) v1).getVariable().getX() == ((FieldConstraintVariable) v2).getVariable().getX()) {
+                if (((FieldConstraintVariable) v1).getVariable().getY() == ((FieldConstraintVariable) v2).getVariable().getY()) {
                     return 0;
-                } else if (((FieldConstraintVariable) v1.getVariable()).getY() > ((FieldConstraintVariable) v2.getVariable()).getY()) {
+                } else if (((FieldConstraintVariable) v1).getVariable().getY() > ((FieldConstraintVariable) v2).getVariable().getY()) {
                     return 1;
                 } else {
                     return -1;
                 }
-            } else if (((FieldConstraintVariable) v1.getVariable()).getX() > ((FieldConstraintVariable) v2.getVariable()).getX()) {
+            } else if (((FieldConstraintVariable) v1).getVariable().getX() > ((FieldConstraintVariable) v2).getVariable().getX()) {
                 return 1;
             } else {
                 return -1;
@@ -84,6 +85,9 @@ public class AC3Solver extends Solver {
 			// ist
 			if (var.getDomain().size() > 1) {
 				for (int domain : var.getDomain()) {
+
+                    System.out.println(var.getVariable() + " : " + var.getDomain() + " "+ domain);
+
 					// klone die Constraints
 					Set<Constraint> clonedConstraints = cloneContraints(constraints);
 					// finde den geklonten neuen Var
@@ -107,7 +111,7 @@ public class AC3Solver extends Solver {
 
 	private boolean solve_(Set<Constraint> constraints) {
 		iterationCounted++;
-		System.out.println(iterationCounted);
+		//System.out.println(iterationCounted);
 		// mache Kantenkonsistent
 		makeArcsConsistent(constraints);
 		// ist bereits gelöst?
@@ -129,20 +133,21 @@ public class AC3Solver extends Solver {
 		// für die Möglichkeiten
         // Zu prüfende Variablen in Queue vorsortieren, damit die mit den wenigsten Möglichkeiten zuerst geprüft werden
         constVars.sort((v1, v2) -> {
-            if (((FieldConstraintVariable) v1.getVariable()).getX() == ((FieldConstraintVariable) v2.getVariable()).getX()) {
-                if (((FieldConstraintVariable) v1.getVariable()).getY() == ((FieldConstraintVariable) v2.getVariable()).getY()) {
+            if (((FieldConstraintVariable) v1).getVariable().getX() == ((FieldConstraintVariable) v2).getVariable().getX()) {
+                if (((FieldConstraintVariable) v1).getVariable().getY() == ((FieldConstraintVariable) v2).getVariable().getY()) {
                     return 0;
-                } else if (((FieldConstraintVariable) v1.getVariable()).getY() > ((FieldConstraintVariable) v2.getVariable()).getY()) {
+                } else if (((FieldConstraintVariable) v1).getVariable().getY() > ((FieldConstraintVariable) v2).getVariable().getY()) {
                     return 1;
                 } else {
                     return -1;
                 }
-            } else if (((FieldConstraintVariable) v1.getVariable()).getX() > ((FieldConstraintVariable) v2.getVariable()).getX()) {
+            } else if (((FieldConstraintVariable) v1).getVariable().getX() > ((FieldConstraintVariable) v2).getVariable().getX()) {
                 return 1;
             } else {
                 return -1;
             }
         });
+
 		for (ConstraintVariable<Field, Integer> var : constVars) {
 			if (var.getDomain().size() > 1) {
 				// versuche die Domain durch
@@ -228,9 +233,13 @@ public class AC3Solver extends Solver {
 				// kante(z, x)
 				q.addAll(getArcsToNeighboursOf(source, constraints));
 			}
+            // falls eine Domain bereits keine Möglichkeiten mehr hat,
+            // kann abgebrochen werden, da es für das aktuelle CSP keine Lösung geben würde
+            if (source.getDomain().isEmpty() || target.getDomain().isEmpty()) {
+                return false;
+            }
 		}
 		return true;
-
 	}
 
 	/*
