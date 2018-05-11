@@ -1,18 +1,11 @@
 package haw.is.sudokury.algorithms;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
-
 import haw.is.sudokury.constraints.ConstraintVariable;
 import haw.is.sudokury.constraints.FieldConstraintVariable;
 import haw.is.sudokury.constraints.interfaces.Constraint;
 import haw.is.sudokury.models.Field;
+
+import java.util.*;
 
 public class AC3Solver extends Solver {
 
@@ -70,6 +63,22 @@ public class AC3Solver extends Solver {
 		// sortiere die Liste
 		// Collections.reverse(constVars);
 		// für die Möglichkeiten
+        constVars.sort((v1, v2) -> {
+            if (((FieldConstraintVariable) v1.getVariable()).getX() == ((FieldConstraintVariable) v2.getVariable()).getX()) {
+                if (((FieldConstraintVariable) v1.getVariable()).getY() == ((FieldConstraintVariable) v2.getVariable()).getY()) {
+                    return 0;
+                } else if (((FieldConstraintVariable) v1.getVariable()).getY() > ((FieldConstraintVariable) v2.getVariable()).getY()) {
+                    return 1;
+                } else {
+                    return -1;
+                }
+            } else if (((FieldConstraintVariable) v1.getVariable()).getX() > ((FieldConstraintVariable) v2.getVariable()).getX()) {
+                return 1;
+            } else {
+                return -1;
+            }
+        });
+
 		for (ConstraintVariable<Field, Integer> var : constVars) {
 			// versuche die Domain durch wenn mehr als 1 Element noch enthalten
 			// ist
@@ -79,7 +88,7 @@ public class AC3Solver extends Solver {
 					Set<Constraint> clonedConstraints = cloneContraints(constraints);
 					// finde den geklonten neuen Var
 					for (Constraint clonedConstraint : clonedConstraints) {
-						// und setze die Annahme ein
+						// und setze die Annxahme ein
 						if (clonedConstraint.getSource().equals(var)) {
 							clonedConstraint.getSource().getDomain().retainAll(Arrays.asList(domain));
 						} else if (clonedConstraint.getTarget().equals(var)) {
@@ -118,6 +127,22 @@ public class AC3Solver extends Solver {
 		// sortiere die Liste
 		// Collections.reverse(constVars);
 		// für die Möglichkeiten
+        // Zu prüfende Variablen in Queue vorsortieren, damit die mit den wenigsten Möglichkeiten zuerst geprüft werden
+        constVars.sort((v1, v2) -> {
+            if (((FieldConstraintVariable) v1.getVariable()).getX() == ((FieldConstraintVariable) v2.getVariable()).getX()) {
+                if (((FieldConstraintVariable) v1.getVariable()).getY() == ((FieldConstraintVariable) v2.getVariable()).getY()) {
+                    return 0;
+                } else if (((FieldConstraintVariable) v1.getVariable()).getY() > ((FieldConstraintVariable) v2.getVariable()).getY()) {
+                    return 1;
+                } else {
+                    return -1;
+                }
+            } else if (((FieldConstraintVariable) v1.getVariable()).getX() > ((FieldConstraintVariable) v2.getVariable()).getX()) {
+                return 1;
+            } else {
+                return -1;
+            }
+        });
 		for (ConstraintVariable<Field, Integer> var : constVars) {
 			if (var.getDomain().size() > 1) {
 				// versuche die Domain durch

@@ -1,10 +1,9 @@
 package haw.is.sudokury.constraints;
 
+import haw.is.sudokury.models.Field;
+
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.Set;
-
-import haw.is.sudokury.models.Field;
 
 public class FieldConstraintVariable extends ConstraintVariable<Field, Integer> {
 
@@ -20,5 +19,12 @@ public class FieldConstraintVariable extends ConstraintVariable<Field, Integer> 
 	public ConstraintVariable cloneVar() {
 		return new FieldConstraintVariable(this.getVariable(), new HashSet<>(this.getDomain()));
 	}
-	
+
+	public int getX() {
+        return this.getVariable().getX();
+    }
+
+    public int getY() {
+        return this.getVariable().getY();
+    }
 }

@@ -8,6 +8,16 @@ import haw.is.sudokury.constraints.FieldConstraintVariable;
 import haw.is.sudokury.constraints.interfaces.Constraint;
 import haw.is.sudokury.interfaces.BoardCreator;
 import haw.is.sudokury.models.Field;
+import org.junit.Before;
+import org.junit.Test;
+
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class AC3SolverTest {
 
@@ -88,6 +98,7 @@ public class AC3SolverTest {
 		// Das Board soll keine 1en und 2en haben (uneindeutig)
 		// Wird trotzdem gel�st weil eine Annahme die uneindeutigkeit auf
 		// zuf�llige Art aufl�st
+		/*
 		for (int y = 0; y < 9; ++y) {
 			for (int x = 0; x < 9; ++x) {
 				if (board[x][y] == 1 || board[x][y] == 2) {
@@ -97,6 +108,18 @@ public class AC3SolverTest {
 			}
 			System.out.println();
 		}
+		*/
+
+		int[][] board = {
+				{ 7, 8, 3, 0, 9, 5, 0, 6, 4 },
+				{ 5, 4, 0, 8, 6, 7, 3, 0, 9 },
+				{ 9, 0, 6, 0, 3, 4, 5, 8, 7 },
+				{ 8, 3, 0, 6, 0, 9, 7, 4, 5 },
+				{ 6, 9, 7, 4, 5, 8, 0, 0, 3 },
+				{ 4, 0, 5, 3, 7, 0, 6, 9, 8 },
+				{ 0, 7, 4, 9, 0, 3, 8, 5, 6 },
+				{ 0, 5, 9, 7, 8, 6, 4, 3, 0 },
+				{ 3, 6, 8, 5, 4, 0, 9, 7, 0 } };
 
 		solver.solve(board);
 
