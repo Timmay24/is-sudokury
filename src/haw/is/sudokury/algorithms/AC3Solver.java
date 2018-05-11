@@ -127,13 +127,14 @@ public class AC3Solver extends Solver {
 					// klone die Constraints
 					Set<Constraint> clonedConstraints = cloneContraints(constraints);
 					// finde den geklonten neuen Var
-					ConstraintVariable<Field, Integer> clonedVar = null;
 					for (Constraint clonedConstraint : clonedConstraints) {
 						// und mache setze die Annahme ein
 						if (clonedConstraint.getSource().equals(var)) {
 							clonedConstraint.getSource().getDomain().retainAll(Arrays.asList(domain));
+							break;
 						} else if (clonedConstraint.getTarget().equals(var)) {
 							clonedConstraint.getTarget().getDomain().retainAll(Arrays.asList(domain));
+							break;
 						}
 					}
 
