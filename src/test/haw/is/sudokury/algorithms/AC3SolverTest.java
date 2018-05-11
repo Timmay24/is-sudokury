@@ -5094,6 +5094,7 @@ public class AC3SolverTest {
 		}
 		*/
 
+		// Board, in dem alle Einsen und Zweien fehlen
 		int[][] board = {
 				{ 7, 8, 3, 0, 9, 5, 0, 6, 4 },
 				{ 5, 4, 0, 8, 6, 7, 3, 0, 9 },
