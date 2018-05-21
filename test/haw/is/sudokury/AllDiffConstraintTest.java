@@ -2,7 +2,7 @@ package haw.is.sudokury;
 
 import haw.is.sudokury.constraints.AllDiffConstraint;
 import haw.is.sudokury.constraints.ConstraintVariable;
-import haw.is.sudokury.models.v2.Field;
+import haw.is.sudokury.models.Field;
 import org.junit.Test;
 
 import java.util.Arrays;

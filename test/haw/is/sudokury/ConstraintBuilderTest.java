@@ -2,7 +2,7 @@ package haw.is.sudokury;
 
 import haw.is.sudokury.constraints.ConstraintBuilder;
 import haw.is.sudokury.constraints.interfaces.Constraint;
-import haw.is.sudokury.models.v2.Board;
+import haw.is.sudokury.models.Board;
 import org.junit.Before;
 import org.junit.Test;
 
