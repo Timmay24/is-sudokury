@@ -1,4 +1,4 @@
-package haw.is.sudokury.models.v2;
+package haw.is.sudokury.models;
 
 import java.util.Objects;
 
