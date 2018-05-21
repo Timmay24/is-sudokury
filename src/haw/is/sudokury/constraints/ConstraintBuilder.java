@@ -1,8 +1,8 @@
 package haw.is.sudokury.constraints;
 
 import haw.is.sudokury.constraints.interfaces.Constraint;
-import haw.is.sudokury.models.v2.Board;
-import haw.is.sudokury.models.v2.Field;
+import haw.is.sudokury.models.Board;
+import haw.is.sudokury.models.Field;
 
 import java.util.HashSet;
 import java.util.Set;

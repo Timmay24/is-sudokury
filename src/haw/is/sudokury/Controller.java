@@ -3,7 +3,7 @@ package haw.is.sudokury;
 import haw.is.sudokury.algorithms.AC3Solver;
 import haw.is.sudokury.interfaces.BoardCreator;
 import haw.is.sudokury.models.Node;
-import haw.is.sudokury.models.v2.Board;
+import haw.is.sudokury.models.Board;
 
 import java.util.HashSet;
 import java.util.Set;

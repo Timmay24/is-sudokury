@@ -1,8 +1,8 @@
 package haw.is.sudokury;
 
-import java.util.*;
-
 import haw.is.sudokury.interfaces.BoardCreator;
+
+import java.util.Random;
 
 /**
 *The SudokuGenerator class creates a random standard (9x9)
@@ -26,14 +26,22 @@ public class SudokuGenerator implements BoardCreator
 	 *@param  difficult the number of blank spaces to insert
 	 *@return board, a partially completed 9x9 Sudoku board
 	 */
-	public int[][] nextBoard()
-	{
-		board = new int[BOARD_WIDTH][BOARD_HEIGHT];
-		nextCell(0,0);
-	//	makeHoles(difficulty);
-		return board;
+    public int[][] nextBoard(int difficult)
+    {
+        board = new int[BOARD_WIDTH][BOARD_HEIGHT];
+        nextCell(0,0);
+        makeHoles(difficult);
+        return board;
 
-	}
+    }
+
+    public int[][] nextBoard()
+    {
+        return nextBoard(0);
+
+    }
+
+
 	
 	/**
 	 *Recursive method that attempts to place every number in a cell.
@@ -130,29 +138,29 @@ public class SudokuGenerator implements BoardCreator
 	 *(to represent blanks)
 	 *@param holesToMake How many 0s to put in the board.
 	 */
-//	public void makeHoles(int holesToMake)
-//	{
-//		/* We define difficulty as follows:
-//			Easy: 32+ clues (49 or fewer holes)
-//			Medium: 27-31 clues (50-54 holes)
-//			Hard: 26 or fewer clues (54+ holes)
-//			This is human difficulty, not algorighmically (though there is some correlation)
-//		*/
-//		double remainingSquares = 81;
-//		double remainingHoles = (double)holesToMake;
-//		
-//		for(int i=0;i<9;i++)
-//			for(int j=0;j<9;j++)
-//			{
-//				double holeChance = remainingHoles/remainingSquares;
-//				if(Math.random() <= holeChance)
-//				{
-//					board[i][j] = 0;
-//					remainingHoles--;
-//				}
-//				remainingSquares--;
-//			}
-//	}
+	public void makeHoles(int holesToMake)
+	{
+		/* We define difficulty as follows:
+			Easy: 32+ clues (49 or fewer holes)
+			Medium: 27-31 clues (50-54 holes)
+			Hard: 26 or fewer clues (54+ holes)
+			This is human difficulty, not algorighmically (though there is some correlation)
+		*/
+		double remainingSquares = 81;
+		double remainingHoles = (double)holesToMake;
+
+		for(int i=0;i<9;i++)
+			for(int j=0;j<9;j++)
+			{
+				double holeChance = remainingHoles/remainingSquares;
+				if(Math.random() <= holeChance)
+				{
+					board[i][j] = 0;
+					remainingHoles--;
+				}
+				remainingSquares--;
+			}
+	}
 	
 	/**
 	 *Prints a representation of board on stdout
