@@ -1,18 +1,18 @@
 package haw.is.sudokury;
 
 import haw.is.sudokury.algorithms.AC3Solver;
+import haw.is.sudokury.annotations.Untested;
 import haw.is.sudokury.interfaces.BoardCreator;
-import haw.is.sudokury.models.Node;
 import haw.is.sudokury.models.Board;
+import haw.is.sudokury.models.Node;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 public class Controller {
 	private BoardCreator boardCreator;
 	private final Node<Board> root;
 	private AC3Solver solver;
-	Set<int[][]> closedList = new HashSet<>();
+	Set<Board> closedList = new HashSet<>();
 
 	public Controller(AC3Solver solver, BoardCreator boardCreator) {
 		this.solver = solver;
@@ -21,47 +21,32 @@ public class Controller {
 		root = new Node<>(board);
 	}
 
-	/*
-	public Node<int[][]> removeField(Node<int[][]> node, Field field) {
-		int[][] board = deepCloneBoard(node.getBoard());
-		board[field.getX()][field.getY()] = 0;
-		if (closedList.contains(board)) {
-			return null;
-		}
-		int difficulty = solver.solve(board);
-		if (difficulty == 0) {
-			closedList.add(board);
-			return null;
-		}
-		Node<int[][]> childNode = node.add(board);
-		childNode.setDifficulty(difficulty);
-		return childNode;
-	}
-	*/
+    @Untested
+	public List<Node<Board>> listAllNodes() {
+        return listAllNodes(getRoot());
+    }
 
-	/*
-	private int[][] deepCloneBoard(int[][] oldArray) {
-		int[][] clonedArray = new int[oldArray.length][oldArray.length];
-		for (int x = 0; x < oldArray.length; ++x) {
-			clonedArray[x] = oldArray[x].clone();
-		}
-		return clonedArray;
-	}
-	*/
-	
-	public void printBoard(int[][] board){
-		for (int y = 0; y < 9; ++y) {
-			for (int x = 0; x < 9; ++x) {
-				System.out.print(board[x][y]);
-				if(x==8){
-					System.out.print("\n");
-				}
-				else {
-					System.out.print(" ");
-				}
-			}
-		}
-	}
+    @Untested
+    public List<Node<Board>> listAllNodes(Node<Board> root) {
+	    if (root.isLeaf()) {
+	        return Arrays.asList(root);
+        } else {
+            List<Node<Board>> nodes = new ArrayList<>();
+            for (Node<Board> node : root.getChildren()) {
+                nodes.addAll(listAllNodes(node));
+            }
+            return nodes;
+        }
+    }
+
+	// TODO Board zum Baum hinzufügen, danach Variationen darunter einhängen, in denen Felder gelöscht sind (wie genau? Strategie?)
+    // (?)  TODO Ein Board leichter kategorisierbar machen =>
+    //      TODO METRIK dafür, wie die Quadranten/Spalten/Zeilen beschaffen sind, wie viele Felder frei sind
+    //      TODO
+    // TODO Methode (die ListAll sortierter weise benutzt, um den höchsten Score zu ermitteln)
+    // TODO ListAll() mäßige Methode, um alle Variationen eines Baumes in einer Liste zu sammeln
+    // TODO Board: (De)Serialisierung, Zustand eines Boardes textlich speichern zu können
+    //      => nützlich für Auflistung in Tabelle?
 
 	public Node<Board> getRoot() {
 		return root;
