@@ -9,7 +9,10 @@ import haw.is.sudokury.models.Field;
 import haw.is.sudokury.models.exceptions.AmbiguousException;
 import haw.is.sudokury.models.exceptions.NotSolvableException;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
 
 public class AC3Solver {
 
@@ -17,11 +20,11 @@ public class AC3Solver {
 
     public int solve(Board board) throws NotSolvableException {
 
-        // Queue mit allen Variablen anlegen, in denen Werte ausprobiert werden können
-        LinkedList<FieldConstraintVariable> varsToCheck = new LinkedList<>(board.getOpenFields());
-
         if (board.isAmbiguous())
             throw new AmbiguousException();
+
+        // Queue mit allen Variablen anlegen, in denen Werte ausprobiert werden können
+        LinkedList<FieldConstraintVariable> varsToCheck = new LinkedList<>(board.getOpenFields());
 
         if (varsToCheck.isEmpty()) {
             if (board.isSolved()) {
@@ -69,8 +72,10 @@ public class AC3Solver {
                 // Prüfe übergebenes Board anhand seiner consistency-Kopie auf Kantenkonsistenz
                 makeArcsConsistent(constraints);
 
+                // Wenn nach Herstellung der Kantenkonsistenz in jeder Felddomäne nur noch eine Möglichkeit ist
                 if (consistencyBoardCopy.domainsAreDistinct()) {
                     try {
+                        // dann ist das Board bis hier hin lösbar und kann mit der Annahme weitergegeben werden
                         return solve(localBoardCopy) + score;
                     } catch (NotSolvableException e) {
                     }
