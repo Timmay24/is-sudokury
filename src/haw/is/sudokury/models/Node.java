@@ -9,10 +9,12 @@ public class Node<T> {
 
     // Additional Attributes
     private int difficulty;
+    private boolean invalid;
 
     public Node(T data) {
         children = new ArrayList<>();
         difficulty = 0;
+        invalid = false;
         this.data = data;
     }
 
@@ -24,6 +26,10 @@ public class Node<T> {
 
     public boolean remove(Node<T> child) {
         return children.remove(child);
+    }
+
+    public List<Node<T>> getChildren() {
+        return children;
     }
 
     // different name for getData for domain specific purpose
