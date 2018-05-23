@@ -257,6 +257,17 @@ public class AC3SolverTest {
         }
     }
 
+    @Test
+    public void test4RandomBoardWith1FieldMissing() {
+        for (int i = 0; i < 4; i++) {
+            Board board = new Board(creator.nextBoard(1));
+            int score = solver.solve(board);
+            System.out.println(board);
+            System.out.println(score);
+            assertTrue(score > 0);
+        }
+    }
+
     @Test(expected = AmbiguousException.class)
     public void testBoardWithout1sAnd2sIsAmbiguous() {
         int[][] config = {
