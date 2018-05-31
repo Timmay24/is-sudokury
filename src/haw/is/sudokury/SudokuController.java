@@ -8,13 +8,13 @@ import haw.is.sudokury.models.Node;
 
 import java.util.*;
 
-public class Controller {
+public class SudokuController {
 	private BoardCreator boardCreator;
 	private final Node<Board> root;
 	private AC3Solver solver;
 	Set<Board> closedList = new HashSet<>();
 
-	public Controller(AC3Solver solver, BoardCreator boardCreator) {
+	public SudokuController(AC3Solver solver, BoardCreator boardCreator) {
 		this.solver = solver;
 		this.boardCreator = boardCreator;
 		Board board = new Board(boardCreator.nextBoard());
